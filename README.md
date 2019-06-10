@@ -7,4 +7,5 @@ ZBRA Impress if a commons library containing very useful classes like `Hash`, `M
 
 * Impress - Contains the basics and may be used on every project
 * Impress.Validation - Contains a validation framework 
-* Impress.Globalization - Contains a glottalization API to correctly  internationalize and localize your application. Useful even if your application has a target single language.
+* Impress.Globalization - Contains a globalization API to correctly  internationalize and localize your application. Useful even if your application has a target single language.
+* Impress.Mail - Contains a framework for sending email. It can send mail directly, using queues and/or using storable queues
