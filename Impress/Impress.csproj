@@ -4,6 +4,14 @@
     <TargetFramework>netstandard2.0</TargetFramework>
     <Version>2.0.0</Version>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <Copyright>ZBRA Soluções</Copyright>
+    <Company>ZBRA</Company>
+    <Product>ZBRA Impress</Product>
+    <PackageTags>c#, csharp, commons, library, productivity, validation, hash</PackageTags>
+    <PackageProjectUrl>https://github.com/zbra-solutions/impress</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/zbra-solutions/impress</RepositoryUrl>
+    <Authors>Impress</Authors>
+    <PackageId>Impress.Core</PackageId>
   </PropertyGroup>
 
 </Project>

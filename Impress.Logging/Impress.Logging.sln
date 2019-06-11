@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29001.49
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Impress.Logging", "Impress.Logging.csproj", "{385B61E3-4960-46B4-B305-9DB438984420}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{385B61E3-4960-46B4-B305-9DB438984420}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{385B61E3-4960-46B4-B305-9DB438984420}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{385B61E3-4960-46B4-B305-9DB438984420}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{385B61E3-4960-46B4-B305-9DB438984420}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {FDFD70EB-11F8-4107-A118-3D0B909D168E}
+	EndGlobalSection
+EndGlobal
