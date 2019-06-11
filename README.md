@@ -10,7 +10,7 @@ ZBRA Impress is a commons library containing very useful classes like `Hash`, `M
 * Impress.Validation - Contains a validation framework together with a annotations based validator. Creates messages compatible with the Globalization toolbox.
 * Impress.Mail - Contains a framework for sending email. It can send mail directly, using queues and/or using storable queues allowing sending mail to be part of unit of work transaction 
 * Impress.Futures - Contains the concept of CompletableFuture to help make sense of parallel executions as an alternative to async/await. Depends on Impress core.
-* Impress.DomainEvents - Contains a simple link:https://martinfowler.com/eaaDev/DomainEvent.html[Domain Event] framework based on the Observer/Listener pattern
+* Impress.DomainEvents - Contains a simple [Domain Event](https://martinfowler.com/eaaDev/DomainEvent.html) framework based on the Observer/Listener pattern
 
 
 ## Instalation
