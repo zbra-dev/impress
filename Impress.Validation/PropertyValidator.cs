@@ -1,4 +1,6 @@
-﻿namespace Impress.Validation
+﻿using System.Linq;
+
+namespace Impress.Validation
 {
     public class PropertyValidator<T> : CompositeValidator<T>
     {

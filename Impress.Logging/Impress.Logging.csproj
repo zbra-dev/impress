@@ -1,7 +1,16 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
+    <Version>2.0.0</Version>
+    <Company>ZBRA</Company>
+    <Authors>ZBRA</Authors>
+    <Product>ZBRA Impress Logging</Product>
+    <Copyright>ZBRA Soluções</Copyright>
+    <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
+    <PackageProjectUrl>https://github.com/zbra-solutions/impress</PackageProjectUrl>
+    <PackageTags>c#, csharp, commons, library, productivity, logging, log</PackageTags>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
   </PropertyGroup>
 
 </Project>

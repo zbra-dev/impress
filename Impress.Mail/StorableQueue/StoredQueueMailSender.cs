@@ -1,5 +1,7 @@
-﻿using System;
+﻿using Impress.Mail.Queue;
+using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Text;
 
 namespace Impress.Mail.StorableQueue

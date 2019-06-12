@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace Impress.Futures
@@ -13,12 +14,12 @@ namespace Impress.Futures
 
         public static ICompletableFuture<P> CompletedWithValue<P>(P payload)
         {
-            return new CompletedFuture<P>(new Result<P>(payload));
+            return new CompletedFuture<P>(Results.InValue<P>(payload));
         }
 
         public static ICompletableFuture<P> CompleteExceptionally<P>(Exception e)
         {
-            return new CompletedFuture<P>(new Result<P>(e));
+            return new CompletedFuture<P>(Results.InError<P>(e));
         }
 
         public static ICompletableFuture<P> RunAsync<P>(Func<IResult<P>> runnable)
@@ -30,7 +31,7 @@ namespace Impress.Futures
                 }
                 catch (Exception e)
                 {
-                    return new Result<P>(e);
+                    return Results.InError<P>(e);
                 }
             });
         }
@@ -40,11 +41,11 @@ namespace Impress.Futures
             return TaskFuture<P>.RunAsync<P>(() => {
                 try
                 {
-                    return new Result<P>(runnable());
+                    return Results.InValue<P>(runnable());
                 }
                 catch (Exception e)
                 {
-                    return new Result<P>(e);
+                    return Results.InError<P>(e);
                 }
             });
         }

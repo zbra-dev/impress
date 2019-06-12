@@ -1,13 +1,14 @@
-﻿using System;
+﻿using Impress.Logging;
+using Impress.Mail.Net;
+using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading;
 
 namespace Impress.Mail.Queue
 {
     public abstract class AbstractQueuedMailSender : IMailSenderProcess
     {
-        //private static readonly ILog log = LogManager.GetLogger(typeof(AbstractQueuedMailSender));
-
 
         private readonly object processLock = new object();
         private Thread thread = null;
@@ -34,6 +35,7 @@ namespace Impress.Mail.Queue
 
         public void Start()
         {
+            var log = this.Logger();
             lock (processLock)
             {
                 if (thread != null)
@@ -42,38 +44,40 @@ namespace Impress.Mail.Queue
                 }
                 if (enabled)
                 {
-                    //log.Debug("Starting QueuedMailSender deamon...");
+                    log.Debug("Starting QueuedMailSender deamon...");
                     thread = new Thread(() => Loop());
                     thread.Name = "QueuedMailSender deamon";
                     thread.Start();
                 }
                 else
                 {
-                    //log.Warn("Mailer Daemon is not enabled.");
+                    log.Warn("Mailer Daemon is not enabled.");
                 }
             }
         }
 
         public void Stop()
         {
+            var log = this.Logger();
             lock (processLock)
             {
                 if (thread != null)
                 {
-                    // log.Debug("Stoping QueuedMailSender daemon...");
+                    log.Debug("Stoping QueuedMailSender daemon...");
                     thread.Abort();
                     thread = null;
                 }
                 else
                 {
-                    //  log.Warn("Mailer daemon is not running");
+                    log.Warn("Mailer daemon is not running");
                 }
             }
         }
 
         private void Loop()
         {
-            // log.Info("Mailer daemon started");
+            var log = this.Logger();
+            log.Info("Mailer daemon started");
             while (true)
             {
                 try
@@ -86,25 +90,26 @@ namespace Impress.Mail.Queue
                     // log.Info("Mailer daemon stop requested");
                     break;
                 }
-                catch (Exception ex)
+                catch (Exception)
                 {
                     //  log.Fatal("Error on Mailer daemon. Waiting before resuming daemon processs", ex);
                     Thread.Sleep(queueRate);
                 }
             }
-            // log.Info("Mailer daemon stopped");
+            log.Info("Mailer daemon stopped");
         }
 
         private void ProcessQueue()
         {
-            //log.Debug("Processing queue...");
+            var log = this.Logger();
+            log.Debug("Processing queue...");
 
             var queuedMessages = GetQueuedMessages();
             foreach (var msg in queuedMessages)
             {
                 try
                 {
-                    // log.DebugFormat("Sending message [{0}]...", msg.Id);
+                    log.Debug("Sending message [{0}]...", msg.Id);
                     realSender.Send(msg);
                     Dequeue(msg);
                     Thread.Sleep(messageRate); // avoid overload SMTP server
@@ -115,19 +120,19 @@ namespace Impress.Mail.Queue
                 }
                 catch (TimeoutTransportMailException e)
                 {
-                    //log.Debug(string.Format("Timeout sending message [{0}]. Retries: {1}. Retrying later.", msg.Id, msg.Retries), e);
+                    log.Debug(e, "Timeout sending message [{0}]. Retries: {1}. Retrying later.", msg.Id, msg.Retries);
                     msg.IncrementRetry();
                     Requeue(msg);
                 }
                 catch (MailException ex)
                 {
-                    // log.Debug(string.Format("Error sending message [{0}]. Retries: {1}. Retrying later.", msg.Id, msg.Retries), ex);
+                    log.Debug(ex, "Error sending message [{0}]. Retries: {1}. Retrying later.", msg.Id, msg.Retries);
                     msg.IncrementRetry();
                     Requeue(msg);
                 }
                 catch (Exception ex)
                 {
-                    //log.Error(string.Format("Unhandled Error sending message [{0}].", msg.Id), ex);
+                    log.Error(ex, "Unhandled Error sending message [{0}].", msg.Id);
                     throw ex;
                 }
             }

@@ -10,8 +10,10 @@
     <PackageTags>c#, csharp, commons, library, productivity, validation, hash</PackageTags>
     <PackageProjectUrl>https://github.com/zbra-solutions/impress</PackageProjectUrl>
     <RepositoryUrl>https://github.com/zbra-solutions/impress</RepositoryUrl>
-    <Authors>Impress</Authors>
+    <Authors>ZBRA</Authors>
     <PackageId>Impress.Core</PackageId>
+    <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
+    <PackageLicenseExpressionVersion>1.0.0</PackageLicenseExpressionVersion>
   </PropertyGroup>
 
 </Project>

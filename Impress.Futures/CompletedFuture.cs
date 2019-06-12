@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 
 namespace Impress.Futures
 {
@@ -50,7 +51,7 @@ namespace Impress.Futures
         {
             if (this.result.HasError)
             {
-                return new CompletedFuture<R>(new Result<R>(result.Exception));
+                return new CompletedFuture<R>( Results.InError<R>(result.Exception));
             }
 
             if (other.IsDone())
@@ -59,17 +60,17 @@ namespace Impress.Futures
 
                 if (otherResult.HasError)
                 {
-                    return new CompletedFuture<R>(new Result<R>(otherResult.Exception));
+                    return new CompletedFuture<R>(Results.InError<R>(otherResult.Exception));
                 }
                 else
                 {
                     try
                     {
-                        return new CompletedFuture<R>(new Result<R>(combinator(result.Payload, otherResult.Payload)));
+                        return new CompletedFuture<R>(Results.InValue<R>(combinator(result.Payload, otherResult.Payload)));
                     }
                     catch (Exception e)
                     {
-                        return new CompletedFuture<R>(new Result<R>(e));
+                        return new CompletedFuture<R>(Results.InError<R>(e));
                     }
 
                 }
