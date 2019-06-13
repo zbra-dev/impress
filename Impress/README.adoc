@@ -1,0 +1,323 @@
+= ZBRA Impress Core
+:toc:
+:listing-caption: Reference
+
+This library contains several utility classes for everyday programming.
+
+= Hash
+
+Implementing `Equals` and `HashCode` can be a nuisance, specially `HashCode`. We do no whant to use a trivial implementation with worst collision like returning a constant, but we also do not what to have must trouble setting the right mathematical expression every time, since the recommendation <<HashCode>> is to use two prime numbers and a chain rule to obtain a good hash we good distribution and fewer collision. 
+
+Normally you should write something like this:
+
+[source , csharp]
+----
+public int HashCode() {
+    int hash = 7;
+    hash = 31 * hash + (int) id;
+    hash = 31 * hash + (name == null ? 0 : name.hashCode());
+    hash = 31 * hash + (email == null ? 0 : email.hashCode());
+    return hash;
+}
+----
+
+With `Hash` you can simply write :
+
+[source , csharp]
+----
+public int HashCode() {
+	return Hash.Create(name).Add(email).GetHashCode();
+}
+----
+
+= Fraction
+
+`Fraction` implements a Rational number using the Value Object pattern <<ValueObjectPattern>>. Not always using `double`, `float` or `decimal` is enough we provide good accuracy. For examples, this code fails 
+
+
+[source , csharp]
+----
+ public void AssertAccuracy( ){
+	double n = 3;
+	
+	Assert.AreEqual(1 , (1 / n) * n )
+	
+ } 
+----
+
+Using `Fraction` it does not fail:
+
+[source , csharp]
+----
+ public void AssertAccuracy( ){
+	Fraction n = Fraction.ValueOf(3);
+	
+	Assert.AreEqual(Fraction.One , (Fraction.One / n) * n )
+	
+ } 
+----
+
+`Fraction` can represent all numbers better than `double`, `float` or `decimal` but is limited to rational values. `NaN` and infinities are not supported.
+
+WARNING: `-Infinity`, `+Infinity` and `NaN` are not supported. 
+
+Use `Fraction` every time you need to represent rational numbers. Since all numbers you may input in a sistem are rational, it is a very useful tool to have.
+
+
+== Maybe
+
+`Maybe` implements the Optional Type <<OptionalType>> monad pattern. It is similar to C#'s `Nullable` but is not limited to structs.
+You can encapsulate any object with Maybe and operate with it regardless if the value is present or not.
+
+WARNING: After you use `Maybe` you may not be able to program without it anymore. 
+
+Instead of this:
+
+[source, csharp]
+----
+public InitView(){
+  int? id= View.GetId(); 
+  var client; 
+  if ( id.HasValue)
+  {
+       client = ServiceSearch(id); 
+  }
+  else 
+  {
+      client = new Client();
+   }
+   View.Show(client);
+}
+----
+
+you can write this:
+
+[source, csharp]
+----
+public InitView(){
+  View.Show(View.GetId()
+	.Select( id =>ServiceSearch(id))
+	.OrGet(() => new Client())
+  );
+}
+----
+
+You can use `Maybe` in methods signatures to indicate the method may not return something useful. You can use `null`for this, but `null` forces you to check for nulls all the time.
+
+[source, csharp]
+----
+
+// in some repository classe 
+public Maybe<Product> FindByEan(EanCode eanCode){
+	
+	if (eanCode == null){
+		return Maybe<Product>.Nothing; //(1)
+	}
+}
+
+// in another class 
+var eanCode = ...
+var productName = productRepository.FindByEan(eanCode).Select(p => p.Name); //(2)
+
+----
+
+You can use `Maybe<>.Nothing` _(1)_ for representing an absent value of the given type and `Select` to operate on the value. If the value is present, the given function will be applied to the value and a new Maybe object containing the result will be returned. If the value is absent, then a `Maybe<>.Nothing` of the target type will be returned.
+
+Many times we use `if` clauses to decide what the program should do, but very often we use `if` statements to assert if the values we where given are null or not. On the first case we use _decision if`s_ and those normally cannot the removed without changing the rules of the program, but _assert if's_ can easily be removed using `Maybe`.
+
+
+[source, csharp]
+----
+
+// in some repository classe 
+public Maybe<Product> FindByEan(EanCode eanCode){
+	
+	if (eanCode == null){
+		return Maybe<Product>.Nothing; //(1)
+	}
+}
+
+// in another class 
+var eanCode = ...
+var productName = productRepository.FindByEan(eanCode).Select(p => p.Name); //(2)
+
+----
+
+=== Interaction with `string`
+
+Impress `Maybe` implements special logic for handling strings where and empty string is considered equivalent to `Maybe<String>.Nothing`. 
+
+[source, csharp]
+----
+
+var name = ...;
+
+if (name.ToMaybe().HasValue()){
+	... 
+} 
+----
+
+Were we see how to encapsulate a value within a maybe using the `ToMaybe()` extension method and checking if the value is present with HasValue. 
+
+=== Interaction with `Nullable` 
+
+Impress offer several extentions methods that allow you to treat `Nullable`s as Optional Type object just like `Maybe`. Also allows you to convert a `Nullable` to a `Maybe`and a `Maybe` to a `Nullable` when necessary
+
+[source, csharp]
+----
+
+int? seconds = ... ;
+
+double? minutes = seconds.Select( s => s / 60d); // direct operation over Nullable 
+
+double? minutes = seconds.ToMaybe().Select( s => s / 60d).ToNullable(); // using maybe and converting to Nullable.
+ 
+----
+
+=== Interaction with `IEnumerable`
+
+`IEnumerable` is also a monad and is very common to handle `IEnumerable` or `Maybe`of some type (e.g. `IEnumerable<Maybe<string>>`). Impress offers several extentions methods to handle those interactions. A special method called `Compact` is specially useful to remove elements that have absent value.
+
+
+[source, csharp]
+----
+
+ISet<EanCode> codes = ... 
+
+// search product with given EAN code, and remove all not found.
+IEnumerable<Product> products =  codes.Select ( eanCode => productRepository.FindByEan(eanCode)) // this results in a IEnumerable<Maybe<Product>>
+									  .Compact(); // this desencapsulates the products discarding the ones not found
+
+----
+
+=== Obtaining a value 
+
+When you have a maybe often you want to read or use the value inside it. The problem is that value may not exist , so you must provide a default value 
+
+
+[source, csharp]
+----
+
+Maybe<int> someOptionalValue = ...
+
+int concreteValue  = someOptionalValue.Or(0); // (1)
+
+int concreteValue  = someOptionalValue.OrZero(); // (2)
+
+int concreteValue  = someOptionalValue.OrGet(() => ReadFromConfiguration()); // (3)
+
+int concreteValue  = someOptionalValue.OrThow(() => new Expection("No concrete Value")); // (4)
+
+int concreteValue  = someOptionalValue.Value; (5)
+
+----
+
+You can use `Or` and pass a default value (1). This values will be used if the `Maybe`has no value of its own. In the case of zero you can use `OrZero` for easier to read code (2). If the default value is not a constant if better to use `OrGet` (3). The function will only be invoked if needed. If you expected the value to be present you can raise ans exception (4) or simply get the value directly (5). 
+Invoking `Value` directly also raises an exception if the value is not present, `OrThrow` allows you to customize the exception raised.
+
+=== Convertion , Cast and Alternatives
+
+`Maybe` also simplifies traditional C# code getting rid of `tryXYZ` methods and assertion `if`s but also simplifies convetions from string to other methods and cast
+
+This code :
+[source , csharp]
+----
+ public bool IsReadOnly(){
+	var isReadOnlyString = Request["isReadOnly"];            
+      
+	if (string.IsNullOrEmpty(isReadOnlyString))   {           
+		return false;
+	}              
+           
+    return bool.TryParse(isReadOnlyString, out var isReadOnly) ? isReadOnly : false;        
+ } 
+
+----
+
+Can simply be :
+
+[source , csharp]
+----
+public bool IsReadOnly()
+{
+    return  Request["isReadOnly"].ToMaybe().Convert<bool>().OrFalse(); 
+}
+----
+
+Equivalently we can use `Maybe` to handle cast :
+
+Instead of :
+
+[source , csharp]
+----
+ public int SizeOfObject(object s){
+	
+	var theString = s as string;
+	if (theString != null){
+		return theString.Length; 
+	}
+	
+	var theCollection = s as Collection;
+	if (theCollection != null){
+		return theCollection.Count; 
+	}
+	
+ } 
+----
+
+we can write :
+
+[source , csharp]
+----
+ public int SizeOfObject(object s){
+	
+	return s.ToMaybe().MaybeCast<object, string>().Select( s => s.Length)
+			.WithAlternative( s.ToMaybe().MaybeCast<object, Collection>().Select( s => s.Count) )
+			.OrZero();
+ } 
+----
+
+`MaybeCast` tries to cast the given source class to the given target class. If the cast fails `Maybe<>.Nothing` is returned. `WithAlternative` allows you to in line a new maybe object if the first has an absent value. 
+
+
+= IResult 
+
+`IResult` implements the Error Handling Monad <<MonadicError>> in C#. Some times having a value or the absence of the value is not enough and we need to track exceptions and causes why the values is not available. `IResult` together with `Results` allows for this control.
+
+[source , csharp]
+----
+// is some local service class
+ public IResult<City> ResolveLocation(Latitude latitude, Longitude longitude){
+
+	try {
+		// call some remove service
+		
+		return Results.InValue(remoteService.ResolveLocation(latitude, longitude))
+	}
+	catch (Exception ex)
+	{
+		return Results.InError(ex);
+	}
+
+ } 
+
+// in another class
+var latitude = ... 
+var longitude = ...
+
+var cityName = service.ResolveLocation(latitude, longitude).Select( city => city.Name).OrThrow();
+
+----
+
+`IResult` is a monad, like `Maybe` so you can operate on the values regardless of an exception has occurred or not. `IResult` is more useful when we use the *Computable Future* library but you can use it in method signatures independently of you implementation to use parallelism or not. 
+
+= References
+
+[[OptionalType, [{counter:xrefnum}] ]] [{counter:refnum}] Optional Type Pattern - https://en.wikipedia.org/wiki/Option_type
+
+[[MonadicError, [{counter:xrefnum}] ]] [{counter:refnum}] Monadic Error handling - https://medium.com/@huund/monadic-error-handling-1e2ce66e3810
+
+[[ValueObjectPattern, [{counter:xrefnum}] ]] [{counter:refnum}] Value Object Pattern - Martin Fowler - https://martinfowler.com/bliki/ValueObject.html
+
+
+[[HashCode, [{counter:xrefnum}] ]] [{counter:refnum}] Guide to hashCode() in Java - https://www.baeldung.com/java-hashcode
