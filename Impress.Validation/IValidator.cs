@@ -7,7 +7,7 @@ namespace Impress.Validation
     /// <summary>
     /// Applies validation rules to the candidate. 
     /// </summary>
-    /// <typeparam name="T">The type of the candicate this validator can validate.</typeparam>
+    /// <typeparam name="T">The type of the candidate this validator can validate.</typeparam>
     public interface IValidator<T>
     {
         /// <summary>

@@ -23,7 +23,7 @@ namespace Impress.Validation
             composite.GetType().GetMethod("Add").Invoke(composite, new object[] { propertyValidator });
         }
 
-        private PropertiesValidator<T> DoAddPropertyValidator<P>(string propertyName, IValidator<P> propertyValidator, params IValidator<P>[] adicionalPropertyValidators)
+        private PropertiesValidator<T> DoAddPropertyValidator<P>(string propertyName, IValidator<P> propertyValidator, params IValidator<P>[] additionalPropertyValidators)
         {
             PropertyValidator<P> compositeValidator;
             object composite;
@@ -39,7 +39,7 @@ namespace Impress.Validation
 
             compositeValidator.Add(propertyValidator);
 
-            foreach (IValidator<P> validator in adicionalPropertyValidators)
+            foreach (IValidator<P> validator in additionalPropertyValidators)
             {
                 compositeValidator.Add(validator);
             }
@@ -47,7 +47,7 @@ namespace Impress.Validation
             return this;
         }
 
-        public PropertiesValidator<T> AddPropertyValidator<P>(Expression<Func<T, P>> expression, IValidator<P> propertyValidator, params IValidator<P>[] adicionalPropertyValidators)
+        public PropertiesValidator<T> AddPropertyValidator<P>(Expression<Func<T, P>> expression, IValidator<P> propertyValidator, params IValidator<P>[] additionalPropertyValidators)
         {
             var memberExpression = expression.Body as MemberExpression;
             if (memberExpression == null)
@@ -58,7 +58,7 @@ namespace Impress.Validation
             {
                 throw new Exception("Property Selector must return a immediate property");
             }
-            return DoAddPropertyValidator(memberExpression.Member.Name, propertyValidator, adicionalPropertyValidators); ;
+            return DoAddPropertyValidator(memberExpression.Member.Name, propertyValidator, additionalPropertyValidators); ;
         }
 
         public new PropertiesValidator<T> Add(IValidator<T> validator)

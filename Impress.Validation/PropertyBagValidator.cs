@@ -47,7 +47,7 @@ namespace Impress.Validation
             return this;
         }
 
-        public PropertyBagValidator<T> AddPropertyValidator<P>(Expression<Func<T, P>> expression, IValidator<P> propertyValidator, params IValidator<P>[] adicionalPropertyValidators)
+        public PropertyBagValidator<T> AddPropertyValidator<P>(Expression<Func<T, P>> expression, IValidator<P> propertyValidator, params IValidator<P>[] additionalPropertyValidators)
         {
             var memberExpression = expression.Body as MemberExpression;
             if (memberExpression == null)
@@ -58,7 +58,7 @@ namespace Impress.Validation
             {
                 throw new Exception("Property Selector must return a immediate property");
             }
-            return DoAddPropertyValidator(memberExpression.Member.Name, propertyValidator, adicionalPropertyValidators); ;
+            return DoAddPropertyValidator(memberExpression.Member.Name, propertyValidator, additionalPropertyValidators); ;
         }
 
         public new PropertyBagValidator<T> Add(IValidator<T> validator)

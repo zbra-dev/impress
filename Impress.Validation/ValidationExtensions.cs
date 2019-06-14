@@ -1,8 +1,7 @@
 ﻿namespace Impress.Validation
 {
-    public static class ValidationExtentions
+    public static class ValidationExtensions
     {
-
         public static void ValidateWith<T>(this T candidate, IValidator<T> validator)
         {
             var result = validator.Validate(candidate);
@@ -13,13 +12,13 @@
             }
         }
 
-        public static void ValidateWith<T>(this T candidate, IValidator<T> validator, params IValidator<T>[] adicionarValidators)
+        public static void ValidateWith<T>(this T candidate, IValidator<T> validator, params IValidator<T>[] additionalValidators)
         {
             var result = validator.Validate(candidate);
 
-            foreach (IValidator<T> adicionalValidator in adicionarValidators)
+            foreach (IValidator<T> additionalValidator in additionalValidators)
             {
-                result = result.Merge(adicionalValidator.Validate(candidate));
+                result = result.Merge(additionalValidator.Validate(candidate));
             }
 
             if (!result.IsValid())
