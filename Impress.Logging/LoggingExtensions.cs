@@ -2,7 +2,7 @@
 
 namespace Impress.Logging
 {
-    public static class LoggingExtentions
+    public static class LoggingExtensions
     {
         public static ILogger Logger(this Type type)
         {
