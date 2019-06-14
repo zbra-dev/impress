@@ -3,9 +3,8 @@ using System.Threading.Tasks;
 
 namespace Impress.Futures
 {
-    internal struct TaskFuture<T> : ICompletableFuture<T>, AsynTaskBasedFuture<T>
+    internal struct TaskFuture<T> : ICompletableFuture<T>, IAsyncTaskBasedFuture<T>
     {
-
         public static TaskFuture<P> RunAsync<P>(Func<IResult<P>> supplier)
         {
             return new TaskFuture<P>(Task.Factory.StartNew(supplier, TaskCreationOptions.DenyChildAttach));
@@ -86,7 +85,7 @@ namespace Impress.Futures
 
         public ICompletableFuture<R> Zip<R, U>(ICompletableFuture<U> other, Func<T, U, R> combinator)
         {
-            AsynTaskBasedFuture<U> asyncTask = other as AsynTaskBasedFuture<U>;
+            IAsyncTaskBasedFuture<U> asyncTask = other as IAsyncTaskBasedFuture<U>;
 
             if (asyncTask == null)
             {

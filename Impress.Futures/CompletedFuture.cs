@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 
 namespace Impress.Futures
 {
-    internal struct CompletedFuture<T> : ICompletableFuture<T>, AsynTaskBasedFuture<T>
+    internal struct CompletedFuture<T> : ICompletableFuture<T>, IAsyncTaskBasedFuture<T>
     {
         private readonly IResult<T> result;
 

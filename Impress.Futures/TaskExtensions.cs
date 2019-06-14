@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 
 namespace Impress.Futures
 {
-    internal static class TaskExtentions
+    internal static class TaskExtensions
     {
         // monad unit
         public static Task<R> Then<T, R>(this Task<T> first, Func<T, R> transform)

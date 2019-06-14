@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 
 namespace Impress.Futures
 {
-    internal interface AsynTaskBasedFuture<T>
+    internal interface IAsyncTaskBasedFuture<T>
     {
         Task<IResult<T>> GetTask();
     }
