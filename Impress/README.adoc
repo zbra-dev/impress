@@ -165,7 +165,7 @@ Here we see how to encapsulate a value within a maybe using the `ToMaybe()` exte
 
 === Interaction with `Nullable` 
 
-Impress offers several extentions methods that allow you to treat `Nullable`s as an Optional Type object just like `Maybe`. It also allows you to convert a `Nullable` to a `Maybe`and a `Maybe` to a `Nullable` when necessary
+Impress offers several extensions methods that allow you to treat `Nullable`s as an Optional Type object just like `Maybe`. It also allows you to convert a `Nullable` to a `Maybe`and a `Maybe` to a `Nullable` when necessary
 
 [source, csharp]
 ----

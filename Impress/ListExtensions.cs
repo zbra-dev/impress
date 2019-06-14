@@ -222,7 +222,7 @@ namespace Impress
 
         /// <summary>
         /// Disjoins the given lists. The common elements are captured in a new list that is returned.
-        /// The commom elements are taken from the list that is the target of the extention invocation.
+        /// The commom elements are taken from the list that is the target of the extension invocation.
         /// The elements are only taken from the target lists if they're not read-only
         /// The disjoin operation uses the Equals definition of the given IEqualityComparer
         /// </summary>
