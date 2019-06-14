@@ -8,7 +8,7 @@
         /// Rounding mode to round towards positive infinity. If the Decimal is positive, behaves as for RoundUp; if negative, 
         /// behaves as for RoundDown. Note that this rounding mode never decreases the calculated value.
         /// </summary>
-        RoundCeiling,
+        RoundCelling,
         /// <summary>
         /// Rounding mode to round towards negative infinity.
         /// Rounding mode to round towards negative infinity. If the Decimal is positive, behave as for RoundDown; if negative, 
