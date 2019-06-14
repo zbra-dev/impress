@@ -5,7 +5,6 @@ namespace Impress.Collections
 {
     public class EnumCollections
     {
-
         public static ISet<E> AsSet<E>() where E : struct
         {
             return new HashSet<E>((E[])Enum.GetValues(ChecIsEnum<E>()));

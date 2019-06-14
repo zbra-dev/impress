@@ -3,9 +3,8 @@ using System.Collections.Generic;
 
 namespace Impress
 {
-    public static class SetExtentions
+    public static class SetExtensions
     {
-
         /// <summary>
         /// Returns an immutable IList with zero elements. 
         /// </summary>
@@ -18,7 +17,7 @@ namespace Impress
 
         public static ISet<T> OrEmpty<T>(this Maybe<ISet<T>> maybe)
         {
-            return maybe.Or(SetExtentions.EmptySet<T>());
+            return maybe.Or(SetExtensions.EmptySet<T>());
         }
 
         public static ISet<T> ExceptWith<T>(this ISet<T> other, Maybe<T> element)

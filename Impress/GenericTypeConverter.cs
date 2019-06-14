@@ -37,7 +37,6 @@ namespace Impress
             return converter;
         }
 
-
         public void AddConverter(Type type, Func<string, object> func)
         {
             types.Add(type, func);
@@ -84,6 +83,5 @@ namespace Impress
                 throw new InvalidTypeConverterException("Cannot convert type " + typeof(T).Name);
             }
         }
-
     }
 }

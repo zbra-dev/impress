@@ -12,7 +12,6 @@ namespace Impress
     /// <typeparam name="T">The type of the value</typeparam>
     public struct Maybe<T> : IEnumerable<T>
     {
-
         public readonly static Maybe<T> Nothing = new Maybe<T>(false);
 
         /// <summary>
@@ -229,8 +228,8 @@ namespace Impress
         }
 
         /// <summary>
-        /// Transformes the maybe to it self. This method is marked as Obsolete to warn the programmer that it sould not be using it.
-        /// As ToMaybe is also an Extention method, is easy to invoque it over the maybe it self. So this method overloads that idiom
+        /// Transforms the maybe to it self. This method is marked as Obsolete to warn the programmer that it should not be using it.
+        /// As ToMaybe is also an Extension method, is easy to invoke it over the maybe it self. So this method overloads that idiom
         /// and marks it with a compiler warning.
         /// </summary>
         /// <returns></returns>
@@ -256,10 +255,10 @@ namespace Impress
         }
     }
 
-    public static class MaybeMonadExtention
+    public static class MaybeMonadExtension
     {
         /// <summary>
-        /// Transforms a maybe of a struct back into a Nullable objet for compatibility with existing APIs.
+        /// Transforms a maybe of a struct back into a Nullable object for compatibility with existing APIs.
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="value"></param>
@@ -514,7 +513,7 @@ namespace Impress
         }
 
         /// <summary>
-        /// Transform the Maybe acording to the given function. Similar to IEnumerable.Select.
+        /// Transforms the Maybe according to the given function. Similar to IEnumerable.Select.
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <typeparam name="V"></typeparam>
@@ -540,7 +539,7 @@ namespace Impress
         }
 
         /// <summary>
-        /// Transform the Maybe acording to the given function. Similar to IEnumerable.Select.
+        /// Transform the Maybe according to the given function. Similar to IEnumerable.Select.
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <typeparam name="V"></typeparam>
@@ -553,7 +552,7 @@ namespace Impress
         }
 
         /// <summary>
-        /// Transform the Maybe acording to the given function. Similar to IEnumerable.Select.
+        /// Transform the Maybe according to the given function. Similar to IEnumerable.Select.
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <typeparam name="V"></typeparam>
@@ -593,7 +592,7 @@ namespace Impress
         }
 
         /// <summary>
-        /// Operate directly on the contained value without unwraping it first. If the value is not present, no action will be taken.
+        /// Operate directly on the contained value without unwrapping it first. If the value is not present, no action will be taken.
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="m"></param>
@@ -644,7 +643,7 @@ namespace Impress
         /// <typeparam name="T">A type that implements IComparable</typeparam>
         /// <param name="x">The value to compare</param>
         /// <param name="y">The value to compare with</param>
-        /// <param name="comparer">The IComparer to use in the comparation</param>
+        /// <param name="comparer">The IComparer to use in the comparison</param>
         /// <returns>0 if the values are the same, or both are Nothing. 1 if x is larger than y, or y is Nothing, and -1 if y is larger than x or x is Nothing.</returns>
         public static int CompareTo<T>(this Maybe<T> x, Maybe<T> y, IComparer<T> comparer)
         {
@@ -668,7 +667,7 @@ namespace Impress
         }
 
         /// <summary>
-        /// Tansforms an IEnumarable of Maybe<T> values to a Enumerable of T values removing all non present values in the process
+        /// Transforms an IEnumerable of Maybe<T> values to a Enumerable of T values removing all non present values in the process
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="all"></param>
@@ -679,7 +678,7 @@ namespace Impress
         }
 
         /// <summary>
-        /// Tansforms an IEnumarable of Nullable<T> values to a Enumerable of T values removing all non present values in the process
+        /// Transforms an IEnumerable of Nullable<T> values to a Enumerable of T values removing all non present values in the process
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="all"></param>
@@ -707,7 +706,7 @@ namespace Impress
         }
 
         /// <summary>
-        /// Transforms to another Maybe object with the same value unless the valus is not present.
+        /// Transforms to another Maybe object with the same value unless the value is not present.
         /// In that case return the given alternative Maybe object.
         /// </summary>
         /// <typeparam name="T"></typeparam>
@@ -749,7 +748,7 @@ namespace Impress
 
         /// <summary>
         /// Tries to convert the given name to a valid value of enum E.
-        /// If the E is not an enum or it does not contain a value conrresponding to the given name, return Maybe.Nothing
+        /// If the E is not an enum or it does not contain a value corresponding to the given name, return Maybe.Nothing
         /// </summary>
         /// <typeparam name="E"></typeparam>
         /// <param name="m"></param>
@@ -786,7 +785,7 @@ namespace Impress
         /// <param name="m">The target maybe</param>
         /// <param name="other">The other maybe to zip with the target.</param>
         /// <param name="function">The function to apply if both maybe have values</param>
-        /// <returns>The result of the function wraped in a maybe</returns>
+        /// <returns>The result of the function wrapped in a maybe</returns>
         public static Maybe<R> Zip<T, S, R>(this Maybe<T> m, Maybe<S> other, Func<T, S, R> function)
         {
             if (m.HasValue && other.HasValue)
@@ -880,8 +879,5 @@ namespace Impress
 
             return constructed.GetMethod("ValueOfValue", BindingFlags.NonPublic | BindingFlags.Static).MakeGenericMethod(new Type[] { returnValueType }).Invoke(null, new object[] { val });
         }
-
     }
-
-
 }

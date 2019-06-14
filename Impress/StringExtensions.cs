@@ -7,9 +7,8 @@ using System.Text.RegularExpressions;
 
 namespace Impress
 {
-    public static class StringExtentions
+    public static class StringExtensions
     {
-
         public static string Repeat(this string text, int count)
         {
             if (count == 0)
@@ -221,15 +220,13 @@ namespace Impress
             return str;
         }
 
-        public static string TakeLast(this string str, int lastAmmount)
+        public static string TakeLast(this string str, int lastAmount)
         {
-            if (str == null || lastAmmount >= str.Length)
+            if (str == null || lastAmount >= str.Length)
             {
                 return str;
             }
-            return str.Substring(str.Length - lastAmmount);
+            return str.Substring(str.Length - lastAmount);
         }
-
-
     }
 }

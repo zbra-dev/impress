@@ -7,8 +7,6 @@ namespace Impress
 {
     public static class EnumerableExtensions
     {
-
-
         public static Maybe<T> MaybeSingle<T>(this IEnumerable<Nullable<T>> enumerable) where T : struct
         {
             if (enumerable == null || !enumerable.Any())
@@ -306,7 +304,7 @@ namespace Impress
         /// <param name="enumerable"></param>
         public static void LoadImplicitly<T>(this IQueryable<T> query)
         {
-            // the use of for each is no good because maintains the connection open given raise to deadloks
+            // the use of for each is no good because maintains the connection open given raise to deadlocks
             query.ToList();
 
         }

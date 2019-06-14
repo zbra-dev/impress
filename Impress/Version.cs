@@ -5,11 +5,11 @@ using System.Text;
 namespace Impress
 {
     /// <summary>
-    /// Represent a software version with the standard convention fields: Manjor, Minor, Revision , Build and Variant
+    /// Represent a software version with the standard convention fields: Major, Minor, Revision, Build and Variant
     /// 
     /// Major and minor are always required.
     /// 
-    /// Can to used to parse from a version formated string (see Parse)
+    /// Can to used to parse from a version formatted string (see Parse)
     /// 
     /// 
     /// 
@@ -34,7 +34,7 @@ namespace Impress
 
             if (text == null)
             {
-                throw new ArgumentNullException("Version text cannot be null");
+                throw new ArgumentNullException(nameof(text), "Version text cannot be null");
             }
 
             if (!text.Contains("."))
@@ -101,7 +101,6 @@ namespace Impress
             return version;
         }
 
-
         public override bool Equals(object obj)
         {
             return obj is Version && Equals((Version)obj);
@@ -132,7 +131,5 @@ namespace Impress
         {
             return Hash.Create(Major).Add(Minor).Add(Revision).GetHashCode();
         }
-
-
     }
 }

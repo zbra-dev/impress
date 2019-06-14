@@ -5,9 +5,8 @@ using System.Reflection;
 
 namespace Impress.Reflection
 {
-    public static class ReflectionExtentions
+    public static class ReflectionExtensions
     {
-
         public static void CopyTo<T>(this T source, T target)
         {
             foreach (PropertyInfo property in source.GetType().GetProperties(BindingFlags.Public | BindingFlags.Instance))
@@ -96,6 +95,5 @@ namespace Impress.Reflection
         {
             return type.IsGenericType && type.GetGenericTypeDefinition() == typeof(Maybe<>);
         }
-
     }
 }

@@ -8,8 +8,8 @@ namespace Impress.Math
     /// <summary>
     /// Represents a rational number that is not , necessarily, an integer.  Examples 2/3 , 8/5, 9/1, 0/1
     /// Integers are not closed for division, in fact no division operation exists that taken two integers always produces another integer.
-    /// There is an Integer Division operation that taking two integers produces another two integers know as quocient and remaider.
-    /// To expand the concept of division, in a closed form, the rational numbers (fractions) are introduced.  All four basic arithmetic operations are closed for racional numbers.
+    /// There is an Integer Division operation that taking two integers produces another two integers know as quotient and remainder.
+    /// To expand the concept of division, in a closed form, the rational numbers (fractions) are introduced.  All four basic arithmetic operations are closed for rational numbers.
     /// 
     /// Rational numbers allow for long calculations with no loss of precision that is not possible with double , float or even decimal.
     /// 
@@ -22,12 +22,11 @@ namespace Impress.Math
     /// </summary>
     public struct Fraction : IComparable<Fraction>
     {
-
         public static readonly Fraction Zero = new Fraction(0, 1);
         public static readonly Fraction One = new Fraction(1, 1);
 
         /// <summary>
-        /// Aproximates PI with accuracy  of 1E10^-38                               
+        /// Approximates PI with accuracy  of 1E10^-38
         /// </summary>
         public static readonly Fraction PI = new Fraction(2646693125139304345, 842468587426513207);
 
@@ -58,19 +57,19 @@ namespace Impress.Math
         /// number is checked to be whole. If it is, then this equivalent to 
         /// Fraction.ValueOf(number.ToString())
         /// 
-        /// If number is not a whole number, the sistem will determine the power of 10 that multiplied be 
+        /// If number is not a whole number, the system will determine the power of 10 that multiplied be 
         /// the given value turn the value to a hole number. Then return a fraction that is that whole number 
         /// divided by the determined power of ten.
         /// 
-        /// Example: for the 0.20 value the power used whould be 100 so that 
+        /// Example: for the 0.20 value the power used would be 100 so that 
         /// 
         /// 20 = 100 * 0.20
         /// 
-        /// The the fraction whould then be  20/ 100 that is equivalent to 2/10 that is equivalent to 1/5. 
+        /// The the fraction would then be  20/ 100 that is equivalent to 2/10 that is equivalent to 1/5. 
         /// So this method would finally return 1/5. 
         /// 
-        /// For irracional number like Math.PI the same algorithm applies since double and decimal are only able to represent aproximmated 
-        /// values of racional numbers. For the cases of PI and E , if you are interested in better aproximations, 
+        /// For irrational number like Math.PI the same algorithm applies since double and decimal are only able to represent approximated
+        /// values of rational numbers. For the cases of PI and E , if you are interested in better approximations,
         /// please consider using Fraction.PI and Fraction.E constants
         /// 
         /// </summary>
@@ -101,7 +100,7 @@ namespace Impress.Math
         /// <summary>
         /// Creates a Fraction with a value equivalent to the given double number.
         /// 
-        /// Please avoid using this method whenever possible. Prefer the overloads that use decimal , ints or string.
+        /// Please avoid using this method whenever possible. Prefer the overloads that use decimal, ints or string.
         /// </summary>
         /// <param name="number">The original value</param>
         /// <returns>The rational equivalent to the given value</returns>
@@ -288,7 +287,7 @@ namespace Impress.Math
 
         /// <summary>
         ///  Inverts the fraction. Fraction a/b will be b/a. 
-        ///  An ArithmeticException will be throwned if this.IsZero is true.
+        ///  An ArithmeticException will be thrown if this.IsZero is true.
         /// </summary>
         /// <returns></returns>
         public Fraction Invert()
@@ -383,7 +382,7 @@ namespace Impress.Math
         }
 
         /// <summary>
-        /// Performs devision. If the right side is zero an ArithmeticException will be throwned 
+        /// Performs division. If the right side is zero an ArithmeticException will be thrown
         /// </summary>
         /// <param name="left"></param>
         /// <param name="right"></param>
@@ -394,7 +393,7 @@ namespace Impress.Math
         }
 
         /// <summary>
-        /// Performs devision. If the right side is zero an ArithmeticException will be throwned 
+        /// Performs division. If the right side is zero an ArithmeticException will be throw
         /// </summary>
         /// <param name="left"></param>
         /// <param name="right"></param>
@@ -405,7 +404,7 @@ namespace Impress.Math
         }
 
         /// <summary>
-        /// Performs devision. If the right side is zero an ArithmeticException will be throwned 
+        /// Performs division. If the right side is zero an ArithmeticException will be thrown
         /// </summary>
         /// <param name="left"></param>
         /// <param name="right"></param>
@@ -688,7 +687,7 @@ namespace Impress.Math
                 catch (OverflowException)
                 {
                     // big integer it too large to fit a decimal 
-                    // use logrithm reduction
+                    // use logarithm reduction
 
                     int sgn = this.numerator.Sign * this.denominator.Sign;
 
@@ -749,8 +748,8 @@ namespace Impress.Math
         }
 
         /// <summary>
-        /// Does not compare value, only representation. 4/2 and 2/1 are diferent fractions.
-        /// However becasue constructions reduces the fraction, equals is compatible with value comparation.
+        /// Does not compare value, only representation. 4/2 and 2/1 are different fractions.
+        /// However because constructions reduces the fraction, equals is compatible with value comparision.
         /// </summary>
         /// <param name="obj"></param>
         /// <returns></returns>
@@ -772,7 +771,7 @@ namespace Impress.Math
 
         /// <summary>
         /// Calculates the exponent power of this fraction.
-        /// This is equivalent to raizing he numerator and denominator to the same power.
+        /// This is equivalent to raising he numerator and denominator to the same power.
         /// 
         /// </summary>
         /// <param name="exponent"></param>
@@ -885,8 +884,8 @@ namespace Impress.Math
         }
 
         /// <summary>
-        /// Returns an array of fraction that correspondes to integer division betwee the numerator and denominator
-        /// The position 0 in the array is the quocient of the division and position 1 in the array is the remainder, so that 
+        /// Returns an array of fraction that corresponds to integer division between the numerator and denominator
+        /// The position 0 in the array is the quotient of the division and position 1 in the array is the remainder, so that 
         /// 
         /// if 
         /// 
@@ -894,12 +893,12 @@ namespace Impress.Math
         /// 
         /// then
         /// 
-        /// f = f.QuocientAndRemainder[0] + f.QuocientAndRemainder[1]
+        /// f = f.QuotientAndRemainder[0] + f.QuotientAndRemainder[1]
         /// 
         /// 
         /// 
         /// </summary>
-        public Fraction[] QuocientAndRemainder
+        public Fraction[] QuotientAndRemainder
         {
             get
             {
@@ -937,8 +936,6 @@ namespace Impress.Math
                 // only the numerator has signal
                 return numerator.Sign;
             }
-
         }
     }
-
 }

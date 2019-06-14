@@ -13,11 +13,11 @@ namespace Impress
         /// </summary>
         Exception Exception { get; }
         /// <summary>
-        /// Sinalizes if the result is in an error state
+        /// Signalizes if the result is in an error state
         /// </summary>
         bool HasError { get; }
         /// <summary>
-        /// Retrives the result payload, or throws an exception if the result has an error
+        /// Retrieves the result payload, or throws an exception if the result has an error
         /// </summary>
         T Payload { get; }
         /// <summary>
@@ -51,9 +51,9 @@ namespace Impress
     }
 
     /// <summary>
-    /// Interaction extentions with maybe
+    /// Interaction extensions with maybe
     /// </summary>
-    public static class ResultExtentions
+    public static class ResultExtensions
     {
         /// <summary>
         /// Extract the value in the result as a maybe. If the result is in an erro state, retrive a Nothing maybe.

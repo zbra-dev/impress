@@ -5,7 +5,7 @@ using System.Linq;
 
 namespace Impress
 {
-    public static class ListExtentions
+    public static class ListExtensions
     {
         public static Maybe<T> SingleRandom<T>(this IList<T> list, Random randomNumberGenerator)
         {
@@ -41,7 +41,6 @@ namespace Impress
             return new T[0]; // the smallest (footprint) readonly list
         }
 
-
         public static IList<T> OrEmpty<T>(this Maybe<IList<T>> maybe)
         {
             return maybe.Or(EmptyList<T>());
@@ -72,7 +71,6 @@ namespace Impress
             var list = other as ReadOnlyListDecorator<T>;
             return list != null ? list : new ReadOnlyListDecorator<T>(other);
         }
-
 
         public static IList<T> SortBy<T, R>(this IList<T> elements, Func<T, R> selector) where R : IComparable<R>
         {
@@ -222,9 +220,6 @@ namespace Impress
             return list;
         }
 
-
-
-
         /// <summary>
         /// Disjoins the given lists. The common elements are captured in a new list that is returned.
         /// The commom elements are taken from the list that is the target of the extention invocation.
@@ -288,8 +283,6 @@ namespace Impress
                 hardList.AddRange(other);
             }
         }
-
-
 
         internal class IEqualityComparerAdapter<T> : IEqualityComparer<T>
         {

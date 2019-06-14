@@ -4,7 +4,6 @@ namespace Impress.Math
 {
     public static class Rounding
     {
-
         private static decimal RoundUp(decimal value, decimal factor)
         {
             return value.Sign() * Decimal.Ceiling(value.Abs() * factor) / factor;
@@ -15,13 +14,13 @@ namespace Impress.Math
             return value.Sign() * Decimal.Floor(value.Abs() * factor) / factor;
         }
 
-        public static decimal Round(this decimal value, int decimalplaces, RoundingMode mode)
+        public static decimal Round(this decimal value, int decimalPlaces, RoundingMode mode)
         {
             //http://en.wikipedia.org/wiki/Rounding
 
-            int factor = decimalplaces.PowerOfTen();
+            int factor = decimalPlaces.PowerOfTen();
 
-            if (mode == RoundingMode.RoundCelling)
+            if (mode == RoundingMode.RoundCeiling)
             {
                 if (value >= 0)
                 {
@@ -79,11 +78,11 @@ namespace Impress.Math
             }
             else if (mode == RoundingMode.RoundHalfEven)
             {
-                return Round(value, decimalplaces, Decimal.Floor(absolute) % 2 == 0 ? RoundingMode.RoundHalfDown : RoundingMode.RoundHalfUp);
+                return Round(value, decimalPlaces, Decimal.Floor(absolute) % 2 == 0 ? RoundingMode.RoundHalfDown : RoundingMode.RoundHalfUp);
             }
             else if (mode == RoundingMode.RoundHalfOdd)
             {
-                return Round(value, decimalplaces, Decimal.Floor(absolute) % 2 != 0 ? RoundingMode.RoundHalfDown : RoundingMode.RoundHalfUp);
+                return Round(value, decimalPlaces, Decimal.Floor(absolute) % 2 != 0 ? RoundingMode.RoundHalfDown : RoundingMode.RoundHalfUp);
             }
 
             throw new ArgumentException("Rounding type " + mode.ToString() + " is not recognized");

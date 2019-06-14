@@ -4,7 +4,6 @@ namespace Impress
 {
     public class IntervalPoint<T> where T : IComparable<T>
     {
-
         public Maybe<T> Point { get; private set; }
         public bool IsOpen { get; private set; }
 

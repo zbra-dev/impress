@@ -4,9 +4,8 @@ using System.Linq;
 
 namespace Impress.Math
 {
-    public static class NumbersExtentions
+    public static class NumbersExtensions
     {
-
         public static decimal FractionaryPart(this decimal value)
         {
             return value - Decimal.Floor(value);

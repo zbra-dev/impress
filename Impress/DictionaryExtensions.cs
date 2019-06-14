@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace Impress
 {
-    public static class DictionaryExtentions
+    public static class DictionaryExtensions
     {
         /// <summary>
         /// Returns an immutable IDictionary with zero elements. 
@@ -64,9 +64,9 @@ namespace Impress
         /// Reads a value from a dictionary. Returns false if the key does not exist on the dictionary.
         /// This method is compatible with IReadOnlyDictionary and IDictionary and tries to cast to them when possible. 
         /// This is due to a limitation on the .NET api design where IDictionary does not implement IReadOnlyDictionary creating
-        /// an ambigousity for the extention resolution algorithm to handle. 
-        /// To circunvein this problem, this method allows for any IEnumrable of KeyValuePair since is the only 
-        /// common interface for both IreadOnlyDictionary and IDictionary. 
+        /// an ambiguity for the extension resolution algorithm to handle. 
+        /// To circumvent this problem, this method allows for any IEnumerable of KeyValuePair since is the only 
+        /// common interface for both IReadOnlyDictionary and IDictionary. 
         /// The method will try to use the TryGetValue on the IDictionary and IReadOnlyInterfaces, and falls back to a linear search 
         /// if the object does not implement one of those
         /// </summary>
