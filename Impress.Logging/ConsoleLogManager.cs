@@ -6,12 +6,12 @@ namespace Impress.Logging
     {
         private static readonly ConsoleLogger logger = new ConsoleLogger();
 
-        public ILogger RetriveLoggerByName(string name)
+        public ILogger RetrieveLoggerByName(string name)
         {
             return logger;
         }
 
-        public ILogger RetriveLoggerByType(Type type)
+        public ILogger RetrieveLoggerByType(Type type)
         {
             return logger;
         }

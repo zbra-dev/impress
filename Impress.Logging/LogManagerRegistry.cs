@@ -86,12 +86,12 @@ namespace Impress.Logging
 
         public ILogger RetriveLoggerByType(Type type)
         {
-            return manager.RetriveLoggerByType(type);
+            return manager.RetrieveLoggerByType(type);
         }
 
         public ILogger RetriveLoggerByName(string name)
         {
-            return manager.RetriveLoggerByName(name);
+            return manager.RetrieveLoggerByName(name);
         }
     }
 }

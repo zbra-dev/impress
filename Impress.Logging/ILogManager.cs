@@ -4,7 +4,7 @@ namespace Impress.Logging
 {
     public interface ILogManager
     {
-        ILogger RetriveLoggerByName(string name);
-        ILogger RetriveLoggerByType(Type type);
+        ILogger RetrieveLoggerByName(string name);
+        ILogger RetrieveLoggerByType(Type type);
     }
 }
