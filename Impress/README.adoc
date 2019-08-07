@@ -15,7 +15,6 @@ Normally you should write something like this:
 public int HashCode()
 {
     int hash = 7;
-    hash = 31 * hash + (int) id;
     hash = 31 * hash + (name == null ? 0 : name.GetHashCode());
     hash = 31 * hash + (email == null ? 0 : email.GetHashCode());
     return hash;
