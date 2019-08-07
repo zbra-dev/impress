@@ -28,7 +28,7 @@ With `Hash` you can simply write :
 ----
 public int HashCode()
 {
-    return Hash.Create(name).Add(email).GetHashCode();
+    return Hash.Create(id).Add(name).Add(email).GetHashCode();
 }
 ----
 
