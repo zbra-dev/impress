@@ -11,7 +11,7 @@ namespace Impress
 
         public static Maybe<T> MaybeSingle<T>(this IEnumerable<Nullable<T>> enumerable) where T : struct
         {
-            if (enumerable == null || !enumerable.Any())
+            if (enumerable == null)
             {
                 return Maybe<T>.Nothing;
             }
@@ -27,7 +27,7 @@ namespace Impress
 
         public static Maybe<T> MaybeSingle<T>(this IEnumerable<T> enumerable)
         {
-            if (enumerable == null || !enumerable.Any())
+            if (enumerable == null)
             {
                 return Maybe<T>.Nothing;
             }
@@ -41,22 +41,24 @@ namespace Impress
             }
         }
 
-        public static Maybe<T> MaybeSingle<T>(this IEnumerable<T> enumerable, Func<T, bool> predicate)
-        {
-            return enumerable == null ? Maybe<T>.Nothing : MaybeSingle(enumerable.Where(predicate));
-        }
-
         #region Maybe First 
 
 
-        public static Maybe<T> MaybeFirst<T>(this IEnumerable<T> enumerable) where T : class
+        public static Maybe<T> MaybeFirst<T>(this IEnumerable<T> enumerable)
         {
-            return (enumerable == null || !enumerable.Any()) ? Maybe<T>.Nothing : enumerable.First().ToMaybe();
-        }
-
-        public static Maybe<T> MaybeFirst<T>(this IEnumerable<T> enumerable, Func<T, bool> predicate) where T : class
-        {
-            return (enumerable == null || !enumerable.Any()) ? Maybe<T>.Nothing : MaybeFirst(enumerable.Where(predicate));
+            if (enumerable == null)
+            {
+                return Maybe<T>.Nothing;
+            }
+            try
+            {
+                return enumerable.First().ToMaybe();
+            }
+            catch (InvalidOperationException)
+            {
+                return Maybe<T>.Nothing;
+            }
+            
         }
 
         public static Maybe<T> MaybeFirst<T>(this IEnumerable<Nullable<T>> enumerable) where T : struct
@@ -275,13 +277,17 @@ namespace Impress
 
         public static IEnumerable<T> Concat<T>(this IEnumerable<T> enumerable, Maybe<T> maybe)
         {
-            return maybe.HasValue ? enumerable.Concat(Enumerable.Repeat(maybe.Value, 1)) : enumerable;
+            return maybe.HasValue 
+                ? enumerable.Concat(Enumerable.Repeat(maybe.Value, 1)) 
+                : enumerable;
         }
 
 
         public static IEnumerable<T> OrderBy<T>(this IEnumerable<T> enumerable, Comparison<T> comparison)
         {
-            return enumerable == null ? Enumerable.Empty<T>() : enumerable.OrderBy(t => t, new ComparisonComparer<T>(comparison));
+            return enumerable == null 
+                ? Enumerable.Empty<T>() 
+                : enumerable.OrderBy(t => t, new ComparisonComparer<T>(comparison));
         }
 
         public static ISet<T> ToSet<T>(this IEnumerable<T> collection)

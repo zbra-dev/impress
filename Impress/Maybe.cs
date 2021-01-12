@@ -8,6 +8,9 @@ namespace Impress
 {
     /// <summary>
     /// Represent a value that might not be present.
+    /// 
+    /// Maybe is a monad and comes with several monad methods based on C# monad support.
+    /// The methods follow LINQ name convention since Maybe can be understood as a list that can only contain 0 or 1 elements.  
     /// </summary>
     /// <typeparam name="T">The type of the value</typeparam>
     public struct Maybe<T> : IEnumerable<T>
@@ -23,7 +26,7 @@ namespace Impress
         /// <returns>Maybe.Nothing is value is null, else return an instance of Maybe encapsulating the value</returns>
         public static Maybe<X> ValueOf<X>(X value) where X : class
         {
-            return value == null ? Maybe<X>.Nothing : new Maybe<X>(value);
+            return ValueOfValue(value);
         }
 
         /// <summary>
@@ -34,7 +37,11 @@ namespace Impress
         /// <returns>Maybe.Nothing is value is null, else return an instance of Maybe encapsulating the value</returns>
         private static Maybe<X> ValueOfValue<X>(X value)
         {
-            return value == null ? Maybe<X>.Nothing : new Maybe<X>(value);
+            if (value == null || (value is string text && string.IsNullOrEmpty(text)))
+            {
+                return Maybe<X>.Nothing;
+            }
+            return new Maybe<X>(value);
         }
 
         /// <summary>
@@ -59,41 +66,51 @@ namespace Impress
         }
 
 
-        private T obj;
-        private bool hasValue;
+        private readonly T obj;
 
         private Maybe(bool hasValue)
         {
-            this.hasValue = hasValue;
+            this.HasValue = hasValue;
             this.obj = default(T);
         }
 
         internal Maybe(T obj)
         {
             this.obj = obj;
-            hasValue = true;
+            HasValue = true;
         }
 
         /// <summary>
         /// Determines the value is present.
         /// </summary>
-        public bool HasValue { get { return hasValue; } }
+        public bool HasValue { get; }
 
         /// <summary>
         /// Returns the value inside the maybe object. If the value is not present
         /// and exception is thrown. You can check if the value is present using HasValue.
+        /// 
         /// </summary>
         public T Value
         {
             get
             {
-                if (!HasValue)
-                {
-                    throw new Exception("No Value is present");
-                }
-
-                return obj;
+                return OrThrow();
             }
+        }
+
+        /// <summary>
+        /// Returns the value inside the maybe object. If the value is not present, throws an exception.
+        /// This method behaves as Value, but makes is semanticly obvious an exception will be thrown
+        /// </summary>
+        /// <returns></returns>
+        public T OrThrow()
+        {
+            if (!HasValue)
+            {
+                throw new Exception("No value of type " + typeof(T).Name + " is present");
+            }
+
+            return obj;
         }
 
         /// <summary>
@@ -103,7 +120,7 @@ namespace Impress
         /// <returns></returns>
         public T Or(T defaultValue)
         {
-            return hasValue ? obj : defaultValue;
+            return HasValue ? obj : defaultValue;
         }
 
         /// <summary>
@@ -114,7 +131,7 @@ namespace Impress
         /// <returns></returns>
         public T OrGet(Func<T> defaultValueSupplier)
         {
-            return hasValue ? obj : defaultValueSupplier();
+            return HasValue ? obj : defaultValueSupplier();
         }
 
         /// <summary>
@@ -127,7 +144,7 @@ namespace Impress
         /// <returns></returns>
         public T OrThrow<E>(Func<E> exceptionSupplier) where E : Exception
         {
-            if (hasValue)
+            if (HasValue)
             {
                 return obj;
             }
@@ -141,7 +158,7 @@ namespace Impress
         /// <param name="consumer"></param>
         public void Consume(Action<T> consumer)
         {
-            if (hasValue)
+            if (HasValue)
             {
                 consumer(obj);
             }
@@ -149,7 +166,7 @@ namespace Impress
 
         public bool Equals(Maybe<T> other)
         {
-            if (this.hasValue)
+            if (this.HasValue)
             {
                 return other.HasValue && this.Value.Equals(other.Value);
             }
@@ -170,7 +187,7 @@ namespace Impress
 
         public override int GetHashCode()
         {
-            return this.hasValue ? Value.GetHashCode() : 0;
+            return this.HasValue ? Value.GetHashCode() : 0;
         }
 
         public override string ToString()
@@ -229,7 +246,7 @@ namespace Impress
         }
 
         /// <summary>
-        /// Transformes the maybe to it self. This method is marked as Obsolete to warn the programmer that it sould not be using it.
+        /// Transformes the maybe to it self. This method is marked as Obsolete to warn the programmer that it sould not be using it. However it will not be removed. It is really auxiliar method to make the mistake obvious.
         /// As ToMaybe is also an Extention method, is easy to invoque it over the maybe it self. So this method overloads that idiom
         /// and marks it with a compiler warning.
         /// </summary>
@@ -376,13 +393,14 @@ namespace Impress
         }
 
         /// <summary>
-        /// Extends Nullable with the Select method similar to Maybe.Select but converting the result to a Maybe. 
+        /// Extends Nullable with the SelectMany method similar to Maybe.SelectMany but converting the result to a Maybe. 
+        /// 
         /// </summary>
         /// <typeparam name="S"></typeparam>
         /// <param name="value"></param>
         /// <param name="defaultValue"></param>
         /// <returns></returns>
-        public static Maybe<V> Select<S, V>(this Nullable<S> m, Func<S, Maybe<V>> k)
+        public static Maybe<V> SelectMany<S, V>(this Nullable<S> m, Func<S, Maybe<V>> k)
             where S : struct
         {
             return !m.HasValue ? Maybe<V>.Nothing : k(m.Value);
@@ -524,19 +542,6 @@ namespace Impress
         public static Maybe<V> Select<T, V>(this Maybe<T> m, Func<T, V> k)
         {
             return !m.HasValue ? Maybe<V>.Nothing : k(m.Value).ToMaybe();
-        }
-
-        /// <summary>
-        /// Transform the Maybe acording to the given function. Similar to IEnumerable.Select.
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <typeparam name="V"></typeparam>
-        /// <param name="m"></param>
-        /// <param name="k"></param>
-        /// <returns></returns>
-        public static Maybe<V> Select<T, V>(this Maybe<T> m, Func<T, Maybe<V>> k)
-        {
-            return !m.HasValue ? Maybe<V>.Nothing : k(m.Value);
         }
 
         /// <summary>
@@ -833,6 +838,11 @@ namespace Impress
             return type.IsGenericType && type.GetGenericTypeDefinition().Equals(typeof(Maybe<>));
         }
 
+        /// <summary>
+        /// Converts the type of an object that is a Maybe of some T, to a maybe of object.
+        /// </summary>
+        /// <param name="someObject"></param>
+        /// <returns></returns>
         public static Maybe<object> AsMaybe(this object someObject)
         {
             if (someObject != null && someObject.GetType().IsMaybeType())

@@ -14,8 +14,28 @@ namespace Impress
     /// 
     /// 
     /// </summary>
-    public struct Version : IEquatable<Version>
+    public struct Version : IEquatable<Version>, IComparable<Version>
     {
+        public static bool operator <(Version left, Version right)
+        {
+            return left.CompareTo(right) < 0;
+        }
+
+        public static bool operator >(Version left, Version right)
+        {
+            return left.CompareTo(right) > 0;
+        }
+
+        public static bool operator <=(Version left, Version right)
+        {
+            return left.CompareTo(right) <= 0;
+        }
+
+        public static bool operator >=(Version left, Version right)
+        {
+            return left.CompareTo(right) >= 0;
+        }
+
         public static Version Of(int major, int minor, int revision = 0, int build = 0, string variant = null)
         {
             return new Version(major, minor, revision, build, variant);
@@ -133,6 +153,22 @@ namespace Impress
             return Hash.Create(Major).Add(Minor).Add(Revision).GetHashCode();
         }
 
+        public int CompareTo(Version other)
+        {
+            var comp = this.Major.CompareTo(other.Major);
+            if (comp == 0)
+            {
+                comp = this.Minor.CompareTo(other.Minor);
+                if (comp == 0)
+                {
+                    comp = this.Revision.CompareTo(other.Revision);
+                    if (comp == 0)
+                    {
 
+                    }
+                }
+            }
+            return comp;
+        }
     }
 }
