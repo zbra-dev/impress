@@ -6,7 +6,7 @@ This library contains several utility classes for everyday programming.
 
 = Hash
 
-Implementing `Equals` and `HashCode` can be a nuisance, specially `HashCode`. We do no whant to use a trivial implementation with worst collision like returning a constant, but we also do not what to have must trouble setting the right mathematical expression every time, since the recommendation <<HashCode>> is to use two prime numbers and a chain rule to obtain a good hash we good distribution and fewer collision. 
+Implementing `Equals` and `HashCode` can be a nuisance, specially `HashCode`. We do no want to use a trivial implementation with worst collision - like returning a constant- but we also do not what to have to much trouble setting the right mathematical expression every time, since the recommendation <<HashCode>> is to use two prime numbers and a chain rule to obtain a good hash with good distribution and fewer collision. 
 
 Normally you should write something like this:
 
@@ -32,7 +32,7 @@ public int HashCode() {
 
 = Fraction
 
-`Fraction` implements a Rational number using the Value Object pattern <<ValueObjectPattern>>. Not always using `double`, `float` or `decimal` is enough we provide good accuracy. For examples, this code fails 
+`Fraction` implements a Rational number using the Value Object pattern <<ValueObjectPattern>>. Not always using `double`, `float` or `decimal` is enough to provide good accuracy. For examples, this code fails 
 
 
 [source , csharp]
@@ -61,7 +61,7 @@ Using `Fraction` it does not fail:
 
 WARNING: `-Infinity`, `+Infinity` and `NaN` are not supported. 
 
-Use `Fraction` every time you need to represent rational numbers. Since all numbers you may input in a sistem are rational, it is a very useful tool to have.
+Use `Fraction` every time you need to represent rational numbers. Since all numbers you may input in a system are rational, it is a very useful tool to have.
 
 
 == Maybe
@@ -161,7 +161,7 @@ Were we see how to encapsulate a value within a maybe using the `ToMaybe()` exte
 
 === Interaction with `Nullable` 
 
-Impress offer several extentions methods that allow you to treat `Nullable`s as Optional Type object just like `Maybe`. Also allows you to convert a `Nullable` to a `Maybe`and a `Maybe` to a `Nullable` when necessary
+Impress offer several extensions methods that allow you to treat `Nullable`s as Optional Type object just like `Maybe`. Also allows you to convert a `Nullable` to a `Maybe`and a `Maybe` to a `Nullable` when necessary
 
 [source, csharp]
 ----
@@ -176,7 +176,7 @@ double? minutes = seconds.ToMaybe().Select( s => s / 60d).ToNullable(); // using
 
 === Interaction with `IEnumerable`
 
-`IEnumerable` is also a monad and is very common to handle `IEnumerable` or `Maybe`of some type (e.g. `IEnumerable<Maybe<string>>`). Impress offers several extentions methods to handle those interactions. A special method called `Compact` is specially useful to remove elements that have absent value.
+`IEnumerable` is also a monad and is very common to handle `IEnumerable` or `Maybe`of some type (e.g. `IEnumerable<Maybe<string>>`). Impress offers several extensions methods to handle those interactions. A special method called `Compact` is specially useful to remove elements that have absent value.
 
 
 [source, csharp]
@@ -186,7 +186,7 @@ ISet<EanCode> codes = ...
 
 // search product with given EAN code, and remove all not found.
 IEnumerable<Product> products =  codes.Select ( eanCode => productRepository.FindByEan(eanCode)) // this results in a IEnumerable<Maybe<Product>>
-									  .Compact(); // this desencapsulates the products discarding the ones not found
+									  .Compact(); // this de-encapsulates the products discarding the ones not found
 
 ----
 
@@ -206,7 +206,7 @@ int concreteValue  = someOptionalValue.OrZero(); // (2)
 
 int concreteValue  = someOptionalValue.OrGet(() => ReadFromConfiguration()); // (3)
 
-int concreteValue  = someOptionalValue.OrThow(() => new Expection("No concrete Value")); // (4)
+int concreteValue  = someOptionalValue.OrThow(() => new Exception("No concrete Value")); // (4)
 
 int concreteValue  = someOptionalValue.Value; (5)
 
@@ -215,7 +215,7 @@ int concreteValue  = someOptionalValue.Value; (5)
 You can use `Or` and pass a default value (1). This values will be used if the `Maybe`has no value of its own. In the case of zero you can use `OrZero` for easier to read code (2). If the default value is not a constant if better to use `OrGet` (3). The function will only be invoked if needed. If you expected the value to be present you can raise ans exception (4) or simply get the value directly (5). 
 Invoking `Value` directly also raises an exception if the value is not present, `OrThrow` allows you to customize the exception raised.
 
-=== Convertion , Cast and Alternatives
+=== Conversion , Cast and Alternatives
 
 `Maybe` also simplifies traditional C# code getting rid of `tryXYZ` methods and assertion `if`s but also simplifies convetions from string to other methods and cast
 
@@ -309,7 +309,7 @@ var cityName = service.ResolveLocation(latitude, longitude).Select( city => city
 
 ----
 
-`IResult` is a monad, like `Maybe` so you can operate on the values regardless of an exception has occurred or not. `IResult` is more useful when we use the *Computable Future* library but you can use it in method signatures independently of you implementation to use parallelism or not. 
+`IResult` is a monad, like `Maybe` so you can operate on the values regardless of an exception has occurred or not. `IResult` is more useful when we use the *Computable Future* library (present in `Impress.Futures`) but you can use it in method signatures independently of you implementation to use parallelism or not. 
 
 = References
 

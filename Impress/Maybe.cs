@@ -135,6 +135,29 @@ namespace Impress
         }
 
         /// <summary>
+        /// Returns the value inside the maybe object. If the value is not present, call the defaultValueSupplier function and return that value after encapsulating it in a Maybe
+        /// This method is preferable to Or() when you want to continue to use mode monad methods instead of terminating and returning a value.
+        /// </summary>
+        /// <param name="defaultValueSupplier">A function that retrives the default value</param>
+        /// <returns></returns>
+        public Maybe<T> OrGetAlternative(Func<T> defaultValueSupplier)
+        {
+            return HasValue ? this : defaultValueSupplier().ToMaybe();
+        }
+
+        /// <summary>
+        /// Returns the value inside the maybe object. If the value is not present, call the defaultValueSupplier function and return an already encapsulated value
+        /// This method is preferable to Or() when you want to continue to use mode monad methods instead of terminating and returning a value.
+        /// This method is preferable to OrGetAlternative(Func<T>) when the calculation it self may return a maybe.
+        /// </summary>
+        /// <param name="defaultValueSupplier">A function that retrives the default value</param>
+        /// <returns></returns>
+        public Maybe<T> OrGetAlternative(Func<Maybe<T>> defaultValueSupplier)
+        {
+            return HasValue ? this : defaultValueSupplier();
+        }
+
+        /// <summary>
         /// Returns the value inside the maybe object. If the value is not present, call the exceptionSupplier function and throw the exception returned by it.
         /// 
         /// There is not OrThrow(Exception) because that will create the exception and capture the stacktrace even if it is not needed. Using a lambda is more efficient because the exception will only be created if needed.
@@ -694,14 +717,18 @@ namespace Impress
             return all.Where(m => m.HasValue).Select(m => m.Value);
         }
 
+
         /// <summary>
         /// Transforms to another Maybe object with the same value unless the valus is not present.
         /// In that case return a Maybe object encapsulating the alternative given value.
+        /// 
+        /// Obsolete: use OrGetAlternative() instead
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="m"></param>
         /// <param name="alternative"></param>
         /// <returns></returns>
+        [Obsolete]
         public static Maybe<T> WithAlternative<T>(this Maybe<T> m, T alternative)
         {
             if (!m.HasValue)
@@ -714,11 +741,14 @@ namespace Impress
         /// <summary>
         /// Transforms to another Maybe object with the same value unless the valus is not present.
         /// In that case return the given alternative Maybe object.
+        /// 
+        /// Obsolete: use OrGetAlternative() instead
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="m"></param>
         /// <param name="alternative"></param>
         /// <returns></returns>
+        [Obsolete]
         public static Maybe<T> WithAlternative<T>(this Maybe<T> m, Maybe<T> alternative)
         {
             if (!m.HasValue)
