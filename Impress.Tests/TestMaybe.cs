@@ -10,6 +10,58 @@ namespace Impress.Tests
     {
 
         [Test]
+        public void TestMaybeValueOfNull()
+        {
+            Assert.AreEqual(Maybe<string>.Nothing, Maybe<string>.ValueOf<string>(null));
+
+        }
+
+        [Test]
+        public void TestMaybeValueOfNotNull()
+        {
+            Assert.AreEqual("test", Maybe<string>.ValueOf("test").Value);
+            Assert.AreEqual(2, Maybe<int>.ValueOfStruct(2).Value);
+        }
+
+        [Test]
+        public void TestCreateWithReflection()
+        {
+            Assert.AreEqual("test".ToMaybe(), MaybeReflection.ReflectionMaybe(typeof(string), "test"));
+            Assert.AreEqual(42.ToMaybe(), MaybeReflection.ReflectionMaybe(typeof(int), 42)) ;
+            Assert.AreEqual(Maybe<int>.Nothing, MaybeReflection.ReflectionMaybeNothing(typeof(int)));
+        }
+
+        [Test]
+        public void TestIdentifyMaybeTypeReflection()
+        {
+            Assert.IsTrue(MaybeReflection.IsMaybeType("test".ToMaybe().GetType()));
+            Assert.IsFalse(MaybeReflection.IsMaybeType("test".GetType()));
+        }
+
+        [Test]
+        public void TestAsMaybeWithReflection()
+        {
+            Assert.AreEqual("test".ToMaybe(), MaybeReflection.AsMaybe("test".ToMaybe()));
+            Assert.AreEqual(Maybe<object>.Nothing, MaybeReflection.AsMaybe(null));
+        }
+
+        [Test]
+        public void TestReadInnerType()
+        {
+            Assert.AreEqual(typeof(string), MaybeReflection.ReadInnerType("test".ToMaybe().GetType()));
+            Assert.AreEqual(typeof(string), MaybeReflection.ReadInnerType(Maybe<string>.Nothing.GetType()));
+            Assert.AreEqual(typeof(int), MaybeReflection.ReadInnerType(5.ToMaybe().GetType()));
+        }
+
+        [Test]
+        public void TestMaybeEmptyStringIsNothing()
+        {
+            Assert.AreEqual(Maybe<string>.Nothing, "".ToMaybe());
+            Assert.AreEqual(Maybe<string>.Nothing, Maybe<string>.ValueOf(""));
+            Assert.AreEqual(Maybe<string>.Nothing, MaybeReflection.ReflectionMaybe(typeof(string), ""));
+        }
+
+        [Test]
         public void TestMaybeZip()
         {
             Maybe<int> x = 2.ToMaybe();
@@ -38,18 +90,25 @@ namespace Impress.Tests
             Assert.IsFalse(r.HasValue);
         }
 
-         [Test]
+        [Test]
+        public void TestMaybeSingleCallsEnumerableOnce()
+        {
+            SingleEnumerableMock single = new SingleEnumerableMock();
+
+            var f = single.MaybeSingle();
+
+            Assert.AreEqual(1, f.Value);
+            Assert.AreEqual(1, single.CallCount);
+
+        }
+
+        [Test]
         public void TestMaybeSingle()
         {
-            var n = Enumerable.Empty<int>().Concat(1);
 
-            var m = n.MaybeSingle();
+            var n = Enumerable.Empty<int>().Concat(0);
 
-            Assert.AreEqual(1, m.Value);
-
-            n = Enumerable.Empty<int>().Concat(0);
-
-            m = n.MaybeSingle(); // an enumerable of the default
+            var m = n.MaybeSingle(); // an enumerable of the default
 
             Assert.IsTrue(m.HasValue);
 
@@ -127,9 +186,22 @@ namespace Impress.Tests
             Assert.IsFalse(m.HasValue);
         }
 
-         [Test]
+        [Test]
+        public void TestMaybeFirstCallsEnumerableOnce()
+        {
+            SingleEnumerableMock single = new SingleEnumerableMock();
+
+            var f = single.MaybeFirst();
+
+            Assert.AreEqual(1, f.Value);
+            Assert.AreEqual(1, single.CallCount);
+
+        }
+
+        [Test]
         public void TestMaybeFirst()
         {
+
             var n = Enumerable.Empty<string>().Concat("2");
 
             var m = n.MaybeFirst();

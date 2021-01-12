@@ -131,8 +131,7 @@ namespace Impress
 
         private static Maybe<V> DoMaybeGetOnDictionaryWithMaybeValues<K, V>(this IEnumerable<KeyValuePair<K, Maybe<V>>> dictionary, K key)
         {
-            Maybe<V> value;
-            if (DoGeneralTryGetValue(dictionary, key, out value))
+            if (DoGeneralTryGetValue(dictionary, key, out Maybe<V> value))
             {
                 return value;
             }
@@ -145,7 +144,7 @@ namespace Impress
             {
                 if (dictionary != null
                     && dictionary.Count != 0
-                    && dictionary.TryGetValue(key.Value, out Maybe<V> value))
+                    && dictionary.TryGetValue(k, out Maybe<V> value))
                 {
                     return value;
                 }
@@ -159,7 +158,7 @@ namespace Impress
             {
                 if (dictionary != null 
                     && dictionary.Count != 0 
-                    && dictionary.TryGetValue(key.Value, out V value))
+                    && dictionary.TryGetValue(k, out V value))
                 {
                     return value.ToMaybe();
                 }
@@ -222,8 +221,8 @@ namespace Impress
                 }
                 else
                 {
-                    value = constructor(key.Value);
-                    dictionary.Add(key.Value, value);
+                    value = constructor(k);
+                    dictionary.Add(k, value);
                     return value;
                 }
             });
@@ -244,8 +243,8 @@ namespace Impress
                 }
                 else
                 {
-                    value = constructor(key.Value);
-                    dictionary.Add(key.Value, value);
+                    value = constructor(k);
+                    dictionary.Add(k, value);
                     return value;
                 }
             });
