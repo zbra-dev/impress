@@ -200,11 +200,21 @@ namespace Impress
 
         public override bool Equals(object obj)
         {
-            if (!(obj is Maybe<T>))
+            if (obj == null || !obj.GetType().IsMaybeType())
             {
                 return false;
             }
-            return Equals((Maybe<T>)obj);
+
+            var other = obj.AsMaybe();
+
+            if (this.HasValue)
+            {
+                return other.HasValue && this.Value.Equals(other.Value);
+            }
+            else
+            {
+                return !other.HasValue;
+            }
         }
 
         public override int GetHashCode()

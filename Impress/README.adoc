@@ -64,7 +64,7 @@ WARNING: `-Infinity`, `+Infinity` and `NaN` are not supported.
 
 Use `Fraction` every time you need to represent rational numbers. Since all numbers you may input in a system are rational, it is a very useful tool to have.
 
-== Maybe
+= Maybe
 
 `Maybe` implements the Optional Type <<OptionalType>> monad pattern. It is similar to C#'s `Nullable` but is not limited to structs.
 You can encapsulate any object with Maybe and operate with it regardless if the value is present or not.
@@ -146,7 +146,7 @@ var productName = productRepository.FindByEan(eanCode).Select(p => p.Name); // (
 
 ----
 
-=== Interaction with `string`
+== Interaction with `string`
 
 Impress `Maybe` implements special logic for handling strings where and empty string is considered equivalent to `Maybe<String>.Nothing`. 
 
@@ -163,7 +163,7 @@ if (name.ToMaybe().HasValue())
 
 Here we see how to encapsulate a value within a maybe using the `ToMaybe()` extension method and checking if the value is present with HasValue.
 
-=== Interaction with `Nullable` 
+== Interaction with `Nullable` 
 
 Impress offers several extentions methods that allow you to treat `Nullable`s as an Optional Type object just like `Maybe`. It also allows you to convert a `Nullable` to a `Maybe`and a `Maybe` to a `Nullable` when necessary
 
@@ -178,7 +178,7 @@ double? minutes = seconds.ToMaybe().Select( s => s / 60d).ToNullable(); // using
 
 ----
 
-=== Interaction with `IEnumerable`
+== Interaction with `IEnumerable`
 
 `IEnumerable` is also a monad and is very common to handle `IEnumerable` or `Maybe` of some type (e.g. `IEnumerable<Maybe<string>>`). Impress offers several extension methods to handle those interactions. A special method called `Compact` is specially useful to remove elements that have absent value.
 
@@ -194,7 +194,7 @@ IEnumerable<Product> products =  codes.Select (eanCode => productRepository.Find
 
 ----
 
-=== Obtaining a value 
+== Obtaining a value 
 
 When you have a Maybe often you want to read or use the value inside it. The problem is that value may not exist , so you must provide a default value 
 
@@ -218,7 +218,7 @@ int concreteValue  = someOptionalValue.Value; (5)
 You can use `Or` and pass a default value (1). This value will be used if the `Maybe` has no value of its own. In the case of zero you can use `OrZero` for easier to read code (2). If the default value is not a constant if better to use `OrGet` (3). The function will only be invoked if needed. If you expected the value to be present you can raise ans exception (4) or simply get the value directly (5). 
 Invoking `Value` directly also raises an exception if the value is not present, `OrThrow` allows you to customize the exception raised.
 
-=== Conversion, Cast and Alternatives
+== Conversion, Cast and Alternatives
 
 `Maybe` not only simplifies traditional C# code by getting rid of `tryXYZ` methods and assertion `if`s but it also simplifies conversions from string to other methods and casts.
 
