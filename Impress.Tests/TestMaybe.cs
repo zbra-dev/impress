@@ -542,6 +542,9 @@ namespace Impress.Tests
             Assert.AreEqual(a, b);
             Assert.AreEqual(a, c);
 
+            Assert.IsTrue(a.Equals(b));
+            Assert.IsTrue(a.Equals(c));
+            Assert.IsFalse(a.Equals(3));
         }
     }
 
