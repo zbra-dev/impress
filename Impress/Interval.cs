@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Impress
 {
@@ -20,17 +18,17 @@ namespace Impress
             var endIntervalPoint = IntervalPoint<V>.PositiveInfinity<V>();
             if (start.HasValue)
             {
-                ValidatePointValueNotNull<V>(start.Value);
+                AssertPointValueNotNull<V>(start.Value);
                 startIntervalPoint = IntervalPoint<V>.Closed(start.Value);
             }
             if (end.HasValue)
             {
-                ValidatePointValueNotNull<V>(end.Value);
+                AssertPointValueNotNull<V>(end.Value);
                 endIntervalPoint = IntervalPoint<V>.Closed(end.Value);
             }
             if (start.HasValue && end.HasValue)
             {
-                ValidateStartBeforeEnd(start.Value, end.Value);
+                AssertStartBeforeEnd(start.Value, end.Value);
             }
             return new Interval<V>(startIntervalPoint, endIntervalPoint);
         }
@@ -41,17 +39,17 @@ namespace Impress
             var endIntervalPoint = IntervalPoint<V>.NegativeInfinity<V>();
             if (start.HasValue)
             {
-                ValidatePointValueNotNull<V>(start.Value);
+                AssertPointValueNotNull<V>(start.Value);
                 startIntervalPoint = IntervalPoint<V>.Open(start.Value);
             }
             if (end.HasValue)
             {
-                ValidatePointValueNotNull<V>(end.Value);
+                AssertPointValueNotNull<V>(end.Value);
                 endIntervalPoint = IntervalPoint<V>.Open(end.Value);
             }
             if (start.HasValue && end.HasValue)
             {
-                ValidateStartBeforeEnd(start.Value, end.Value);
+                AssertStartBeforeEnd(start.Value, end.Value);
             }
             return new Interval<V>(startIntervalPoint, endIntervalPoint);
         }
@@ -64,66 +62,66 @@ namespace Impress
         /// <returns></returns>
         public static Interval<V> Degenerated<V>(V value) where V : IComparable<V>
         {
-            ValidatePointValueNotNull<V>(value);
+            AssertPointValueNotNull<V>(value);
             return new Interval<V>(IntervalPoint<V>.Closed<V>(value), IntervalPoint<V>.Closed<V>(value));
         }
 
         public static Interval<V> ClosedStartClosedEnd<V>(V start, V end) where V : IComparable<V>
         {
-            ValidatePointValueNotNull<V>(start);
-            ValidatePointValueNotNull<V>(end);
-            ValidateStartBeforeEnd(start, end);
+            AssertPointValueNotNull<V>(start);
+            AssertPointValueNotNull<V>(end);
+            AssertStartBeforeEnd(start, end);
             return new Interval<V>(IntervalPoint<V>.Closed(start), IntervalPoint<V>.Closed(end));
         }
 
         public static Interval<V> OpenStartOpenEnd<V>(V start, V end) where V : IComparable<V>
         {
-            ValidatePointValueNotNull<V>(start);
-            ValidatePointValueNotNull<V>(end);
-            ValidateStartBeforeEnd(start, end);
+            AssertPointValueNotNull<V>(start);
+            AssertPointValueNotNull<V>(end);
+            AssertStartBeforeEnd(start, end);
 
             return new Interval<V>(IntervalPoint<V>.Open(start), IntervalPoint<V>.Open(end));
         }
 
         public static Interval<V> ClosedStartOpenEnd<V>(V start, V end) where V : IComparable<V>
         {
-            ValidatePointValueNotNull<V>(start);
-            ValidatePointValueNotNull<V>(end);
-            ValidateStartBeforeEnd(start, end);
+            AssertPointValueNotNull<V>(start);
+            AssertPointValueNotNull<V>(end);
+            AssertStartBeforeEnd(start, end);
 
             return new Interval<V>(IntervalPoint<V>.Closed(start), IntervalPoint<V>.Open(end));
         }
 
         public static Interval<V> OpenStartClosedEnd<V>(V start, V end) where V : IComparable<V>
         {
-            ValidatePointValueNotNull<V>(start);
-            ValidatePointValueNotNull<V>(end);
-            ValidateStartBeforeEnd(start, end);
+            AssertPointValueNotNull<V>(start);
+            AssertPointValueNotNull<V>(end);
+            AssertStartBeforeEnd(start, end);
 
             return new Interval<V>(IntervalPoint<V>.Open(start), IntervalPoint<V>.Closed(end));
         }
 
         public static Interval<V> OpenStartInfinityEnd<V>(V start) where V : IComparable<V>
         {
-            ValidatePointValueNotNull<V>(start);
+            AssertPointValueNotNull<V>(start);
             return new Interval<V>(IntervalPoint<V>.Open(start), IntervalPoint<V>.PositiveInfinity<V>());
         }
 
         public static Interval<V> ClosedStartInfinityEnd<V>(V start) where V : IComparable<V>
         {
-            ValidatePointValueNotNull<V>(start);
+            AssertPointValueNotNull<V>(start);
             return new Interval<V>(IntervalPoint<V>.Closed(start), IntervalPoint<V>.PositiveInfinity<V>());
         }
 
         public static Interval<V> InfinityStartOpenEnd<V>(V end) where V : IComparable<V>
         {
-            ValidatePointValueNotNull<V>(end);
+            AssertPointValueNotNull<V>(end);
             return new Interval<V>(IntervalPoint<V>.NegativeInfinity<V>(), IntervalPoint<V>.Open(end));
         }
 
         public static Interval<V> InfinityStartClosedEnd<V>(V end) where V : IComparable<V>
         {
-            ValidatePointValueNotNull<V>(end);
+            AssertPointValueNotNull<V>(end);
             return new Interval<V>(IntervalPoint<V>.NegativeInfinity<V>(), IntervalPoint<V>.Closed(end));
         }
 
@@ -132,7 +130,7 @@ namespace Impress
             return new Interval<V>(IntervalPoint<V>.NegativeInfinity<V>(), IntervalPoint<V>.PositiveInfinity<V>());
         }
 
-        private static void ValidatePointValueNotNull<V>(V value) where V : IComparable<V>
+        private static void AssertPointValueNotNull<V>(V value) where V : IComparable<V>
         {
             if (value == null)
             {
@@ -140,7 +138,7 @@ namespace Impress
             }
         }
 
-        private static void ValidateStartBeforeEnd<V>(V start, V end) where V : IComparable<V>
+        private static void AssertStartBeforeEnd<V>(V start, V end) where V : IComparable<V>
         {
             if (start.CompareTo(end) > 0)
             {

@@ -34,7 +34,7 @@ public int HashCode()
 
 == Fraction
 
-`Fraction` implements a Rational number using the Value Object pattern <<ValueObjectPattern>>. Not always using `double`, `float` or `decimal` is enough we provide good accuracy. For examples, this code fails 
+`Fraction` implements a Rational number using the Value Object pattern <<ValueObjectPattern>>. Not always using `double`, `float` or `decimal` is enough to provide good accuracy. For examples, this code fails 
 
 [source , csharp]
 ----
@@ -62,7 +62,7 @@ public void AssertAccuracy()
 
 WARNING: `-Infinity`, `+Infinity` and `NaN` are not supported. 
 
-Use `Fraction` every time you need to represent rational numbers. Since all numbers you may input in a sistem are rational, it is a very useful tool to have.
+Use `Fraction` every time you need to represent rational numbers. Since all numbers you may input in a system are rational, it is a very useful tool to have.
 
 == Maybe
 

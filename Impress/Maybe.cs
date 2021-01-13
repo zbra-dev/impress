@@ -8,6 +8,9 @@ namespace Impress
 {
     /// <summary>
     /// Represent a value that might not be present.
+    /// 
+    /// Maybe is a monad and comes with several monad methods based on C# monad support.
+    /// The methods follow LINQ name convention since Maybe can be understood as a list that can only contain 0 or 1 elements.  
     /// </summary>
     /// <typeparam name="T">The type of the value</typeparam>
     public struct Maybe<T> : IEnumerable<T>
@@ -22,7 +25,7 @@ namespace Impress
         /// <returns>Maybe.Nothing is value is null, else return an instance of Maybe encapsulating the value</returns>
         public static Maybe<X> ValueOf<X>(X value) where X : class
         {
-            return value == null ? Maybe<X>.Nothing : new Maybe<X>(value);
+            return ValueOfValue(value);
         }
 
         /// <summary>
@@ -33,7 +36,11 @@ namespace Impress
         /// <returns>Maybe.Nothing is value is null, else return an instance of Maybe encapsulating the value</returns>
         private static Maybe<X> ValueOfValue<X>(X value)
         {
-            return value == null ? Maybe<X>.Nothing : new Maybe<X>(value);
+            if (value == null || (value is string text && string.IsNullOrEmpty(text)))
+            {
+                return Maybe<X>.Nothing;
+        }
+            return new Maybe<X>(value);
         }
 
         /// <summary>
@@ -58,42 +65,52 @@ namespace Impress
         }
 
 
-        private T obj;
-        private bool hasValue;
+        private readonly T obj;
 
         private Maybe(bool hasValue)
         {
-            this.hasValue = hasValue;
+            this.HasValue = hasValue;
             this.obj = default(T);
         }
 
         internal Maybe(T obj)
         {
             this.obj = obj;
-            hasValue = true;
+            HasValue = true;
         }
 
         /// <summary>
         /// Determines the value is present.
         /// </summary>
-        public bool HasValue { get { return hasValue; } }
+        public bool HasValue { get; }
 
         /// <summary>
         /// Returns the value inside the maybe object. If the value is not present
         /// and exception is thrown. You can check if the value is present using HasValue.
+        /// 
         /// </summary>
         public T Value
         {
             get
             {
+                return OrThrow();
+            }
+        }
+
+        /// <summary>
+        /// Returns the value inside the maybe object. If the value is not present, throws an exception.
+        /// This method behaves as Value, but makes is semanticly obvious an exception will be thrown
+        /// </summary>
+        /// <returns></returns>
+        public T OrThrow()
+        {
                 if (!HasValue)
                 {
-                    throw new Exception("No Value is present");
+                throw new Exception("No value of type " + typeof(T).Name + " is present");
                 }
 
                 return obj;
             }
-        }
 
         /// <summary>
         /// Returns the value inside the maybe object. If the value is not present, return the given default value.
@@ -102,7 +119,7 @@ namespace Impress
         /// <returns></returns>
         public T Or(T defaultValue)
         {
-            return hasValue ? obj : defaultValue;
+            return HasValue ? obj : defaultValue;
         }
 
         /// <summary>
@@ -113,7 +130,30 @@ namespace Impress
         /// <returns></returns>
         public T OrGet(Func<T> defaultValueSupplier)
         {
-            return hasValue ? obj : defaultValueSupplier();
+            return HasValue ? obj : defaultValueSupplier();
+        }
+
+        /// <summary>
+        /// Returns the value inside the maybe object. If the value is not present, call the defaultValueSupplier function and return that value after encapsulating it in a Maybe
+        /// This method is preferable to Or() when you want to continue to use mode monad methods instead of terminating and returning a value.
+        /// </summary>
+        /// <param name="defaultValueSupplier">A function that retrives the default value</param>
+        /// <returns></returns>
+        public Maybe<T> OrGetAlternative(Func<T> defaultValueSupplier)
+        {
+            return HasValue ? this : defaultValueSupplier().ToMaybe();
+        }
+
+        /// <summary>
+        /// Returns the value inside the maybe object. If the value is not present, call the defaultValueSupplier function and return an already encapsulated value
+        /// This method is preferable to Or() when you want to continue to use mode monad methods instead of terminating and returning a value.
+        /// This method is preferable to OrGetAlternative(Func<T>) when the calculation it self may return a maybe.
+        /// </summary>
+        /// <param name="defaultValueSupplier">A function that retrives the default value</param>
+        /// <returns></returns>
+        public Maybe<T> OrGetAlternative(Func<Maybe<T>> defaultValueSupplier)
+        {
+            return HasValue ? this : defaultValueSupplier();
         }
 
         /// <summary>
@@ -126,7 +166,7 @@ namespace Impress
         /// <returns></returns>
         public T OrThrow<E>(Func<E> exceptionSupplier) where E : Exception
         {
-            if (hasValue)
+            if (HasValue)
             {
                 return obj;
             }
@@ -140,7 +180,7 @@ namespace Impress
         /// <param name="consumer"></param>
         public void Consume(Action<T> consumer)
         {
-            if (hasValue)
+            if (HasValue)
             {
                 consumer(obj);
             }
@@ -148,7 +188,7 @@ namespace Impress
 
         public bool Equals(Maybe<T> other)
         {
-            if (this.hasValue)
+            if (this.HasValue)
             {
                 return other.HasValue && this.Value.Equals(other.Value);
             }
@@ -169,7 +209,7 @@ namespace Impress
 
         public override int GetHashCode()
         {
-            return this.hasValue ? Value.GetHashCode() : 0;
+            return this.HasValue ? Value.GetHashCode() : 0;
         }
 
         public override string ToString()
@@ -375,13 +415,14 @@ namespace Impress
         }
 
         /// <summary>
-        /// Extends Nullable with the Select method similar to Maybe.Select but converting the result to a Maybe. 
+        /// Extends Nullable with the SelectMany method similar to Maybe.SelectMany but converting the result to a Maybe. 
+        /// 
         /// </summary>
         /// <typeparam name="S"></typeparam>
         /// <param name="value"></param>
         /// <param name="defaultValue"></param>
         /// <returns></returns>
-        public static Maybe<V> Select<S, V>(this Nullable<S> m, Func<S, Maybe<V>> k)
+        public static Maybe<V> SelectMany<S, V>(this Nullable<S> m, Func<S, Maybe<V>> k)
             where S : struct
         {
             return !m.HasValue ? Maybe<V>.Nothing : k(m.Value);
@@ -533,19 +574,6 @@ namespace Impress
         /// <param name="m"></param>
         /// <param name="k"></param>
         /// <returns></returns>
-        public static Maybe<V> Select<T, V>(this Maybe<T> m, Func<T, Maybe<V>> k)
-        {
-            return !m.HasValue ? Maybe<V>.Nothing : k(m.Value);
-        }
-
-        /// <summary>
-        /// Transform the Maybe according to the given function. Similar to IEnumerable.Select.
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <typeparam name="V"></typeparam>
-        /// <param name="m"></param>
-        /// <param name="k"></param>
-        /// <returns></returns>
         public static Maybe<V> Select<T, V>(this Maybe<T> m, Func<T, Nullable<V>> k) where V : struct
         {
             return !m.HasValue ? Maybe<V>.Nothing : ToMaybe(k(m.Value));
@@ -688,14 +716,18 @@ namespace Impress
             return all.Where(m => m.HasValue).Select(m => m.Value);
         }
 
+
         /// <summary>
         /// Transforms to another Maybe object with the same value unless the valus is not present.
         /// In that case return a Maybe object encapsulating the alternative given value.
+        /// 
+        /// Obsolete: use OrGetAlternative() instead
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="m"></param>
         /// <param name="alternative"></param>
         /// <returns></returns>
+        [Obsolete]
         public static Maybe<T> WithAlternative<T>(this Maybe<T> m, T alternative)
         {
             if (!m.HasValue)
@@ -708,11 +740,14 @@ namespace Impress
         /// <summary>
         /// Transforms to another Maybe object with the same value unless the value is not present.
         /// In that case return the given alternative Maybe object.
+        /// 
+        /// Obsolete: use OrGetAlternative() instead
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="m"></param>
         /// <param name="alternative"></param>
         /// <returns></returns>
+        [Obsolete]
         public static Maybe<T> WithAlternative<T>(this Maybe<T> m, Maybe<T> alternative)
         {
             if (!m.HasValue)
@@ -832,6 +867,11 @@ namespace Impress
             return type.IsGenericType && type.GetGenericTypeDefinition().Equals(typeof(Maybe<>));
         }
 
+        /// <summary>
+        /// Converts the type of an object that is a Maybe of some T, to a maybe of object.
+        /// </summary>
+        /// <param name="someObject"></param>
+        /// <returns></returns>
         public static Maybe<object> AsMaybe(this object someObject)
         {
             if (someObject != null && someObject.GetType().IsMaybeType())

@@ -121,12 +121,7 @@ namespace Impress
 
         public static Maybe<V> MaybeGet<K, V>(this IEnumerable<KeyValuePair<K, V>> dictionary, Maybe<K> key)
         {
-            if (key.HasValue)
-            {
-                return DoMaybeGet(dictionary, key.Value);
-            }
-
-            return Maybe<V>.Nothing;
+            return key.SelectMany(k => DoMaybeGet(dictionary, k));
         }
 
         public static Maybe<V> MaybeGet<K, V>(this IEnumerable<KeyValuePair<K, Maybe<V>>> dictionary, K key)
@@ -136,8 +131,7 @@ namespace Impress
 
         private static Maybe<V> DoMaybeGetOnDictionaryWithMaybeValues<K, V>(this IEnumerable<KeyValuePair<K, Maybe<V>>> dictionary, K key)
         {
-            Maybe<V> value;
-            if (DoGeneralTryGetValue(dictionary, key, out value))
+            if (DoGeneralTryGetValue(dictionary, key, out Maybe<V> value))
             {
                 return value;
             }
@@ -146,41 +140,41 @@ namespace Impress
 
         public static Maybe<V> MaybeGet<K, V>(this IDictionary<K, Maybe<V>> dictionary, Maybe<K> key)
         {
-            if (key.HasValue)
+            return key.SelectMany(k =>
             {
-                Maybe<V> value;
-                if (dictionary.Count != 0 && dictionary.TryGetValue(key.Value, out value))
+                if (dictionary != null
+                    && dictionary.Count != 0
+                    && dictionary.TryGetValue(k, out Maybe<V> value))
                 {
                     return value;
                 }
-            }
-            return Maybe<V>.Nothing;
+                return Maybe<V>.Nothing;
+            });
         }
 
         public static Maybe<V> MaybeGet<K, V>(this IDictionary<K, V> dictionary, Maybe<K> key)
         {
-            if (key.HasValue)
+            return key.SelectMany(k =>
             {
-                V value;
-                if (dictionary.Count != 0 && dictionary.TryGetValue(key.Value, out value))
+                if (dictionary != null 
+                    && dictionary.Count != 0 
+                    && dictionary.TryGetValue(k, out V value))
                 {
                     return value.ToMaybe();
                 }
-            }
-
-            return Maybe<V>.Nothing;
+                return Maybe<V>.Nothing;
+            });
         }
 
 
         public static Maybe<V> MaybeGetOrAdd<K, V>(this IDictionary<K, V> dictionary, K key, Func<K, V> constructor)
         {
-            if (dictionary == null)
+            if (dictionary == null || dictionary.Count == 0)
             {
                 return Maybe<V>.Nothing;
             }
 
-            V value;
-            if (dictionary.TryGetValue(key, out value))
+            if (dictionary.TryGetValue(key, out V value))
             {
                 return value.ToMaybe();
             }
@@ -195,13 +189,12 @@ namespace Impress
 
         public static Maybe<V> MaybeGetOrAdd<K, V>(this IDictionary<K, Maybe<V>> dictionary, K key, Func<K, Maybe<V>> constructor)
         {
-            if (dictionary == null)
+            if (dictionary == null || dictionary.Count == 0)
             {
                 return Maybe<V>.Nothing;
             }
 
-            Maybe<V> value;
-            if (dictionary.TryGetValue(key, out value))
+            if (dictionary.TryGetValue(key, out Maybe<V> value))
             {
                 return value;
             }
@@ -215,51 +208,46 @@ namespace Impress
 
         public static Maybe<V> MaybeGetOrAdd<K, V>(this IDictionary<K, Maybe<V>> dictionary, Maybe<K> key, Func<K, Maybe<V>> constructor)
         {
-            if (dictionary == null)
+            if (dictionary == null || dictionary.Count == 0)
             {
                 return Maybe<V>.Nothing;
             }
 
-            if (key.HasValue)
+            return key.SelectMany(k =>
             {
-                Maybe<V> value;
-                if (dictionary.TryGetValue(key.Value, out value))
+                if (dictionary.TryGetValue(k, out Maybe<V> value))
                 {
                     return value;
                 }
                 else
                 {
-                    value = constructor(key.Value);
-                    dictionary.Add(key.Value, value);
+                    value = constructor(k);
+                    dictionary.Add(k, value);
                     return value;
                 }
-            }
-            return Maybe<V>.Nothing;
+            });
         }
 
         public static Maybe<V> MaybeGetOrAdd<K, V>(this IDictionary<K, V> dictionary, Maybe<K> key, Func<K, V> constructor)
         {
-            if (dictionary == null)
+            if (dictionary == null || dictionary.Count == 0)
             {
                 return Maybe<V>.Nothing;
             }
 
-            if (key.HasValue)
+            return key.Select(k =>
             {
-                V value;
-                if (dictionary.TryGetValue(key.Value, out value))
+                if (dictionary.TryGetValue(k, out V value))
                 {
-                    return value.ToMaybe();
+                    return value;
                 }
                 else
                 {
-                    value = constructor(key.Value);
-                    dictionary.Add(key.Value, value);
-                    return value.ToMaybe();
+                    value = constructor(k);
+                    dictionary.Add(k, value);
+                    return value;
                 }
-            }
-
-            return Maybe<V>.Nothing;
+            });
         }
     }
 }
